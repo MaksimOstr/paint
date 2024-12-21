@@ -1,17 +1,22 @@
-import { Controller, Post, Request, UseGuards } from "@nestjs/common";
-import { LocalAuthGuard } from "./guards/local-auth.guard";
+import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common'
+import { LocalAuthGuard } from './guards/local-auth.guard'
+import { AuthService } from './auth.service'
+import { JwtAuthGuard } from './guards/jwt-auth.guard'
+import { UserWithoutPassword } from 'src/shared/types/userWithoutPassword'
 
 @Controller('auth')
 export class AuthController {
-    constructor() {}
+  constructor(private authService: AuthService) {}
 
+  @UseGuards(LocalAuthGuard)
+  @Post('login')
+  async login(@Request() req): Promise<{ access_token: string }> {
+    return await this.authService.login(req.user)
+  }
 
-    @UseGuards(LocalAuthGuard)
-    @Post('login')
-    async login(
-        @Request() req
-    ) {
-        console.log(req)
-        return req.user
-    }
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getProfile(@Request() req): UserWithoutPassword {
+    return req.user
+  }
 }

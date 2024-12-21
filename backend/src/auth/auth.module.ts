@@ -5,11 +5,18 @@ import { PassportModule } from "@nestjs/passport";
 import { UserService } from "src/user/user.service";
 import { UserModule } from "src/user/user.module";
 import { LocalStrategy } from "./strategies/local.strategy";
+import { JwtModule } from "@nestjs/jwt";
+import { options } from "src/shared/config/jwt-module-options";
+import { JwtStrategy } from "./strategies/jwt.strategy";
 
 @Module({
-    imports: [PassportModule, UserModule],
+    imports: [
+        PassportModule,
+        UserModule,
+        JwtModule.registerAsync(options())
+    ],
     controllers: [AuthController],
-    providers: [AuthService, LocalStrategy],
+    providers: [AuthService, LocalStrategy, JwtStrategy],
     exports: []
 })
 

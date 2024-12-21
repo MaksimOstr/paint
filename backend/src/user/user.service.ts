@@ -4,6 +4,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { CreateUserDto } from "src/shared/dto/create-user.dto";
 import { userSelect } from "src/shared/selectors/user.select";
 import * as bcrypt from 'bcrypt';
+import { UserWithoutPassword } from "src/shared/types/userWithoutPassword";
 
 @Injectable()
 export class UserService {
@@ -13,7 +14,7 @@ export class UserService {
 
 
 
-    async createUser(data: CreateUserDto): Promise<Omit<User, 'password'>> {
+    async createUser(data: CreateUserDto): Promise<UserWithoutPassword> {
         const { username, password } = data
 
         const isUser = await this.findUserByIdOrUsername(username)
@@ -25,7 +26,8 @@ export class UserService {
         return await this.prismaService.user.create({
             data: {
                 username,
-                password: await bcrypt.hash(password, await bcrypt.genSalt(10))
+                password: await bcrypt.hash(password, await bcrypt.genSalt(10)),
+                role: ['USER']
             },
             select: userSelect
         })
