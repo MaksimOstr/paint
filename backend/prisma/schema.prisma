@@ -10,10 +10,11 @@ datasource db {
 model User {
   id           String         @id @default(uuid())
   username     String         @unique
-  password     String
+  password     String?
   role         Role[]
   drawings     Drawing[]
   refreshToken RefreshToken[]
+  authMethod   AuthMethod?     @default(LOCAL)
 }
 
 model Drawing {
@@ -38,4 +39,9 @@ model RefreshToken {
 enum Role {
   ADMIN
   USER
+}
+
+enum AuthMethod {
+  LOCAL
+  GOOGLE
 }

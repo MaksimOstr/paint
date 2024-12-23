@@ -9,17 +9,18 @@ import { JwtModule } from "@nestjs/jwt";
 import { options } from "src/shared/config/jwt-module-options";
 import { JwtStrategy } from "./strategies/jwt.strategy";
 import { RefreshTokenModule } from "src/refreshToken/refreshToken.module";
-import { RefreshTokenService } from "src/refreshToken/refreshToken.service";
+import { GoogleStrategy } from "./strategies/google.strategy";
+
 
 @Module({
     imports: [
         RefreshTokenModule,
-        PassportModule,
+        PassportModule.register({ session: false }),
         UserModule,
         JwtModule.registerAsync(options())
     ],
     controllers: [AuthController],
-    providers: [AuthService, LocalStrategy, JwtStrategy],
+    providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy],
     exports: []
 })
 

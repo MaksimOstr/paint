@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { User } from "@prisma/client";
 import { CreateUserDto } from "src/shared/dto/create-user.dto";
@@ -14,6 +14,12 @@ export class UserController {
     async createUser(
         @Body() data: CreateUserDto
     ): Promise<UserWithoutPassword> {
+        const isUser = await this.findUserByUsernameOrId(data.username)
+
+        if(isUser) {
+            throw new BadRequestException('User with such a username already exists!')
+        }
+        
         return await this.userService.createUser(data)
     }
 

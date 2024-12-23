@@ -1,5 +1,5 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
-import { User } from '@prisma/client'
+import { AuthMethod, User } from '@prisma/client'
 import { UserService } from 'src/user/user.service'
 import * as bcrypt from 'bcrypt'
 import passport from 'passport'
@@ -19,14 +19,21 @@ export class AuthService {
 
   async validateUser(
     username: string,
-    pass: string,
+    pass?: string,
+    authMethod?: AuthMethod,
   ): Promise<UserWithoutPassword> {
     const user = await this.userService.findUserByIdOrUsername(username)
-    if (user && (await bcrypt.compare(pass, user.password))) {
-      const { password, ...result } = user
-      return result
+
+    if (authMethod === 'GOOGLE') {
+      if (!user) {
+        return await this.userService.createUser({ username }, authMethod)
+      }
+    } else if (!(user && (await bcrypt.compare(pass, user.password)))) {
+      return null
     }
-    return null
+
+    const { password, ...result } = user
+    return result
   }
 
   async generateAccessToken(payload: UserWithoutPassword): Promise<string> {
@@ -52,7 +59,6 @@ export class AuthService {
     userAgent: string,
     userIp: string,
   ): Promise<Tokens> {
-
     if (!refreshToken) throw new UnauthorizedException()
 
     const validRefreshToken = await this.refreshTokenService.validateRefreshToken(
@@ -60,7 +66,7 @@ export class AuthService {
         userAgent,
         refreshToken,
       )
-      
+
     if (!validRefreshToken) {
       throw new UnauthorizedException()
     }

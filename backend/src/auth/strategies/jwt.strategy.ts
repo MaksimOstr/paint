@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(payload: UserWithoutPassword): UserWithoutPassword {
+  validate(payload: UserWithoutPassword): Omit<UserWithoutPassword, 'authMethod'> {
     const { id, username, role } = payload
     return { id, username, role };
   }

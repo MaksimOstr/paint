@@ -16,6 +16,7 @@ import { userIp } from 'src/shared/decorators/userIp.decorator'
 import { Request, Response } from 'express'
 import { Tokens } from 'src/shared/types/tokens'
 import { Cookie } from 'src/shared/decorators/cookie.decorator'
+import { GoogleAuthGuard } from './guards/google-auth.guard'
 
 @Controller('auth')
 export class AuthController {
@@ -29,6 +30,7 @@ export class AuthController {
     @userAgent() agent: string,
     @userIp() userIp: string,
   ): Promise<void> {
+    console.log(req.user)
     const tokens = await this.authService.generateTokens(req.user, agent, userIp)
     this.setRefreshTokenToCookies(tokens, res)
   }
@@ -63,5 +65,24 @@ export class AuthController {
       secure: true,
     })
     res.json({ access_token: tokens.access_token })
+  }
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/login')
+  async handleLogin() {
+    return { msg: 'ok' }
+  }
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/redirect')
+  async handleRedirect(
+    @Req() req,
+    @userAgent() agent: string,
+    @userIp() userIp: string,
+    @Res() res: Response,
+  ) {
+    console.log(req.user)
+    const tokens = await this.authService.generateTokens(req.user, agent, userIp)
+    this.setRefreshTokenToCookies(tokens, res)
   }
 }
