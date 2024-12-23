@@ -8,9 +8,12 @@ import { LocalStrategy } from "./strategies/local.strategy";
 import { JwtModule } from "@nestjs/jwt";
 import { options } from "src/shared/config/jwt-module-options";
 import { JwtStrategy } from "./strategies/jwt.strategy";
+import { RefreshTokenModule } from "src/refreshToken/refreshToken.module";
+import { RefreshTokenService } from "src/refreshToken/refreshToken.service";
 
 @Module({
     imports: [
+        RefreshTokenModule,
         PassportModule,
         UserModule,
         JwtModule.registerAsync(options())

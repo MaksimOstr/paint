@@ -8,17 +8,31 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  username String @unique
-  password String
-  role     Role[]
-  drawings Drawing[]
+  id           String         @id @default(uuid())
+  username     String         @unique
+  password     String
+  role         Role[]
+  drawings     Drawing[]
+  refreshToken RefreshToken[]
 }
 
 model Drawing {
   id       String @id @default(uuid())
-  author   User @relation(fields: [authorId], references: [id])
+  author   User   @relation(fields: [authorId], references: [id])
   authorId String
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  userAgent String   @map("user-agent")
+  userIp    String   @map("user-ip")
+  
+  @@unique([userId, userAgent, userIp])
 }
 
 enum Role {
