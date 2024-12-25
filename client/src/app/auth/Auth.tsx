@@ -1,8 +1,6 @@
-'use client'
-
 import { Box, Button, Divider, Paper, Stack, Typography } from '@mui/material'
 import React from 'react'
-import { Form } from './Form'
+import { Form } from './form/Form'
 import { formBodyProps } from './auth.styles'
 
 

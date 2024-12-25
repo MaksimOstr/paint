@@ -1,9 +1,11 @@
+'use client'
+
 import { IAuthForm } from '@/types/auth.types'
 import { Button, Stack, TextField } from '@mui/material'
 import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from "@hookform/resolvers/yup"
-import { formSchema } from './schema/formSchema'
+import { formSchema } from './formSchema'
 
 
 
