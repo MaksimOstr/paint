@@ -3,6 +3,9 @@ import "./globals.css";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { ThemeProviderClient } from "@/theme/ThemeProvider";
 import { cookies } from "next/headers";
+import ThemeToggleButton from "@/components/ui/ThemeToggle";
+
+
 
 
 
@@ -31,9 +34,10 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AppRouterCacheProvider options={{ enableCssLayer: true, key: 'css', prepend: true }}>
-        <ThemeProviderClient initialMode={theme}>
-          {children}
-        </ThemeProviderClient>
+          <ThemeProviderClient initialMode={theme}>
+            <ThemeToggleButton/>
+            {children}
+          </ThemeProviderClient>
         </AppRouterCacheProvider>
       </body>
     </html>

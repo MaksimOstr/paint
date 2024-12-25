@@ -7,6 +7,7 @@ import { lightTheme, darkTheme } from './theme';
 import Cookies from 'js-cookie';
 import { ReactNode } from 'react';
 
+
 interface ThemeContextType {
   mode: string;
   toggleTheme: () => void;

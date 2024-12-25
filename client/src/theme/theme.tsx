@@ -27,6 +27,15 @@ export const lightTheme: ThemeOptions = createTheme({
       textTransform: 'none',
     },
   },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 500,
+      md: 900,
+      lg: 1400,
+      xl: 2000,
+    }
+  }
 });
 
 
@@ -56,4 +65,15 @@ export const darkTheme: ThemeOptions = createTheme({
       textTransform: 'none',
     },
   },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 500,
+      md: 900,
+      lg: 1400,
+      xl: 2000,
+    }
+  }
 });
+
+
