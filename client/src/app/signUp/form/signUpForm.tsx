@@ -1,14 +1,20 @@
-'use client'
+"use client";
 
-import { IAuthForm } from "@/types/auth.types";
 import { Button, Stack, TextField } from "@mui/material";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { formSchema } from "./formSchema";
 import { ISignUpForm } from "@/types/signUp.types";
+import { useAppDispatch } from "@/hooks/rtkHooks";
+import { useCreateAccountMutation } from "@/services/signUp.service";
+import { useRouter } from "next/navigation";
 
 export const Form: React.FC = () => {
+
+  const dispatch = useAppDispatch()
+  const [createUser] = useCreateAccountMutation()
+  const { push } = useRouter()
   const {
     control,
     handleSubmit,
@@ -23,7 +29,19 @@ export const Form: React.FC = () => {
     mode: "onChange",
   });
 
-  const onSubmit: SubmitHandler<IAuthForm> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<ISignUpForm> = (data) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirmPassword:_, ...userData } = data
+    createUser(userData)
+    .unwrap()
+    .then(res => {
+      console.log(res)
+      push('/auth')
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

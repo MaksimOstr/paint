@@ -1,10 +1,16 @@
+'use client'
+
 import { Box, Button, Divider, Paper, Stack, Typography } from '@mui/material'
 import React from 'react'
 import { Form } from './form/Form'
 import { formBodyProps } from './auth.styles'
+import { useRouter } from 'next/navigation'
 
 
 export const Auth = () => {
+
+  const { push } = useRouter()
+
   return (
     <Box
         width='100vw'
@@ -31,6 +37,7 @@ export const Auth = () => {
                   </Typography>
                 </Divider>
                 <Button 
+                  onClick={() => push('http://localhost:4000/api/auth/google/login')}
                   size='large'
                   variant='outlined'
                   startIcon={

@@ -1,14 +1,10 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
-import { ThemeProviderClient } from "@/theme/ThemeProvider";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import { ThemeProviderClient } from "@/providers/ThemeProvider";
 import { cookies } from "next/headers";
 import ThemeToggleButton from "@/components/ui/ThemeToggle";
-
-
-
-
-
+import StoreProvider from "@/providers/StoreProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,24 +16,26 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-
-
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const theme = cookieStore.get('theme')?.value || 'light'; 
+  const theme = cookieStore.get("theme")?.value || "light";
 
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <AppRouterCacheProvider options={{ enableCssLayer: true, key: 'css', prepend: true }}>
-          <ThemeProviderClient initialMode={theme}>
-            <ThemeToggleButton/>
-            {children}
-          </ThemeProviderClient>
+        <AppRouterCacheProvider
+          options={{ enableCssLayer: true, key: "css", prepend: true }}
+        >
+          <StoreProvider>
+            <ThemeProviderClient initialMode={theme}>
+              <ThemeToggleButton />
+              {children}
+            </ThemeProviderClient>
+          </StoreProvider>
         </AppRouterCacheProvider>
       </body>
     </html>

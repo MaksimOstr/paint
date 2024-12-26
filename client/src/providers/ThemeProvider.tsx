@@ -3,7 +3,7 @@
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { createContext, useContext, useState, useEffect } from 'react';
-import { lightTheme, darkTheme } from './theme';
+import { lightTheme, darkTheme } from '../theme/theme';
 import Cookies from 'js-cookie';
 import { ReactNode } from 'react';
 

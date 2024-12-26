@@ -30,9 +30,9 @@ export class AuthController {
     @userAgent() agent: string,
     @userIp() userIp: string,
   ): Promise<void> {
-    console.log(req.user)
     const tokens = await this.authService.generateTokens(req.user, agent, userIp)
-    this.setRefreshTokenToCookies(tokens, res)
+    this.setRefreshTokenToCookies(tokens.refresh_token, res)
+    res.json({ access_token: tokens.access_token })
   }
 
   @UseGuards(JwtAuthGuard)
@@ -49,22 +49,21 @@ export class AuthController {
     @Cookie('refreshToken') refreshToken: string
   ) {
     const tokens = await this.authService.refreshTokens(refreshToken, agent, userIp)
-    this.setRefreshTokenToCookies(tokens, res)
+    this.setRefreshTokenToCookies(tokens.refresh_token, res)
+    res.json({ access_token: tokens.access_token })
   }
 
-  private setRefreshTokenToCookies(tokens: Tokens, res: Response): void {
-    if (!tokens) {
+  private setRefreshTokenToCookies(refreshToken: Tokens['refresh_token'], res: Response): void {
+    if (!refreshToken) {
       throw new UnauthorizedException()
     }
-
-    res.cookie('refreshToken', tokens.refresh_token.token, {
+    res.cookie('refreshToken', refreshToken.token, {
       httpOnly: true,
-      sameSite: 'none',
-      expires: new Date(tokens.refresh_token.expiresAt),
+      sameSite: 'lax',
+      expires: new Date(refreshToken.expiresAt),
       path: '/',
       secure: true,
     })
-    res.json({ access_token: tokens.access_token })
   }
 
   @UseGuards(GoogleAuthGuard)
@@ -81,8 +80,8 @@ export class AuthController {
     @userIp() userIp: string,
     @Res() res: Response,
   ) {
-    console.log(req.user)
     const tokens = await this.authService.generateTokens(req.user, agent, userIp)
-    this.setRefreshTokenToCookies(tokens, res)
+    this.setRefreshTokenToCookies(tokens.refresh_token, res)
+    res.redirect(`http://localhost:3000?token=${tokens.access_token}`)
   }
 }
