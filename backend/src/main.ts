@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
+import { IoAdapter } from '@nestjs/platform-socket.io';
+import { AbstractWsAdapter } from '@nestjs/websockets';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,6 +12,7 @@ async function bootstrap() {
     credentials: true,
     origin: 'http://localhost:3000'
   })
+  app.useWebSocketAdapter(new IoAdapter(app))
   const port = process.env.PORT ?? 4000
   const globalPrefix = 'api'
   app.setGlobalPrefix(globalPrefix);

@@ -8,8 +8,8 @@ import authReducer from './slices/auth.slice'
 export const makeStore = () => {
   return configureStore({
     reducer: {
-        auth: authReducer,
         [globalApi.reducerPath]: globalApi.reducer,
+        auth: authReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(globalApi.middleware),

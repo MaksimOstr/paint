@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { RefreshTokenModule } from './refreshToken/refreshToken.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { CacheModule } from '@nestjs/cache-manager';
+import { EventsModule } from './events/event.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { CacheModule } from '@nestjs/cache-manager';
     PrismaModule,
     UserModule,
     AuthModule,
-    ConfigModule.forRoot({ isGlobal: true })
+    ConfigModule.forRoot({ isGlobal: true }),
+    EventsModule
   ],
   controllers: [AppController],
   providers: [AppService],

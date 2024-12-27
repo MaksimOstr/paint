@@ -8,8 +8,7 @@ import { formSchema } from './formSchema'
 import { IUserAuth } from '@/types/auth.types'
 import { useLoginMutation } from '@/services/auth.service'
 import { useRouter } from 'next/navigation'
-import { useAppDispatch } from '@/hooks/rtkHooks'
-import { setAccessToken } from '@/slices/auth.slice'
+import { toast } from 'react-toastify'
 
 
 
@@ -17,7 +16,6 @@ export const Form: React.FC = () => {
 
     const { push } = useRouter()
     const [login] = useLoginMutation()
-    const dispatch = useAppDispatch()
 
     const { control, handleSubmit, formState: { errors } } = useForm<IUserAuth>({
         defaultValues: {
@@ -31,12 +29,13 @@ export const Form: React.FC = () => {
     const onSubmit: SubmitHandler<IUserAuth> = async (data) => {
         login(data)
         .unwrap()
-        .then(result => {
-            dispatch(setAccessToken(result.access_token))
-            push('/')
+        .then(res => {
+            localStorage.setItem('accessToken', res.access_token)
+            toast.success("You've successfully logged in!")
+            push('/main')
         })
-        .catch(error => {
-            console.log(error)
+        .catch(() => {
+            toast.error('Incorrect username or password!')
         })
     }
 

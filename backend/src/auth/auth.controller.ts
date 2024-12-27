@@ -41,7 +41,7 @@ export class AuthController {
     return req.user
   }
 
-  @Post('refresh')
+  @Get('refresh')
   async refresh(
     @Res() res: Response,
     @userAgent() agent: string,
@@ -82,6 +82,6 @@ export class AuthController {
   ) {
     const tokens = await this.authService.generateTokens(req.user, agent, userIp)
     this.setRefreshTokenToCookies(tokens.refresh_token, res)
-    res.redirect(`http://localhost:3000?token=${tokens.access_token}`)
+    res.redirect(`http://localhost:3000/main?token=${tokens.access_token}`)
   }
 }

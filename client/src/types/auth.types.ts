@@ -7,3 +7,9 @@ export interface IUserAuth {
 export interface AuthRequest {
     access_token: string
 }
+
+export interface IUser {
+    id: string
+    username: string
+    role: Array<string>
+}

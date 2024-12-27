@@ -1,5 +1,5 @@
 import { globalApi } from '@/api/globalApi'
-import { AuthRequest, IUserAuth } from '@/types/auth.types'
+import { AuthRequest, IUser, IUserAuth } from '@/types/auth.types'
 
 
 
@@ -14,7 +14,10 @@ export const authService = globalApi.injectEndpoints({
                 body
             }),
         }),
+        getUserProfile: builder.query<IUser, void>({
+            query: () => 'auth/profile'
+        })
     })
 })
 
-export const { useLoginMutation } = authService
+export const { useLoginMutation, useGetUserProfileQuery } = authService

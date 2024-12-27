@@ -5,6 +5,7 @@ import { ThemeProviderClient } from "@/providers/ThemeProvider";
 import { cookies } from "next/headers";
 import ThemeToggleButton from "@/components/ui/ThemeToggle";
 import StoreProvider from "@/providers/StoreProvider";
+import { ToastContainer } from 'react-toastify';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,10 @@ export default async function RootLayout({
             <ThemeProviderClient initialMode={theme}>
               <ThemeToggleButton />
               {children}
+              <ToastContainer
+                hideProgressBar
+                position='top-center'
+              />
             </ThemeProviderClient>
           </StoreProvider>
         </AppRouterCacheProvider>
