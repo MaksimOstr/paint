@@ -3,7 +3,6 @@ import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { ThemeProviderClient } from "@/providers/ThemeProvider";
 import { cookies } from "next/headers";
-import ThemeToggleButton from "@/components/ui/ThemeToggle";
 import StoreProvider from "@/providers/StoreProvider";
 import { ToastContainer } from 'react-toastify';
 
@@ -33,7 +32,6 @@ export default async function RootLayout({
         >
           <StoreProvider>
             <ThemeProviderClient initialMode={theme}>
-              <ThemeToggleButton />
               {children}
               <ToastContainer
                 hideProgressBar

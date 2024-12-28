@@ -1,5 +1,9 @@
+import { RootState } from '@/store'
 import { AuthRequest } from '@/types/auth.types'
+import { Action, PayloadAction } from '@reduxjs/toolkit'
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta, QueryReturnValue } from '@reduxjs/toolkit/query/react'
+import { HYDRATE } from 'next-redux-wrapper'
+
 
 
 
@@ -35,8 +39,18 @@ const baseQueryWithReauth: BaseQueryFn<
   return result
 }
 
+function isHydrateAction(action: Action): action is PayloadAction<RootState> {
+  return action.type === HYDRATE
+}
+
 export const globalApi = createApi({
     reducerPath: 'globalApi',
     baseQuery: baseQueryWithReauth,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    extractRehydrationInfo(action, { reducerPath }): any {
+      if (isHydrateAction(action)) {
+        return action.payload[reducerPath]
+      }
+    },
     endpoints: () => ({})
 })

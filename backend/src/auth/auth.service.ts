@@ -76,5 +76,8 @@ export class AuthService {
     return await this.generateTokens(result, userAgent, userIp)
   }
 
+  async logout(token: string, userIp: string, userAgent: string) {
+    return await this.refreshTokenService.deleteRefreshToken(userIp, userAgent, token)
+  }
   
 }

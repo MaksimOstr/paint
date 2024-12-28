@@ -10,8 +10,8 @@ const ThemeToggleButton = () => {
   const { mode, toggleTheme } = useTheme();
 
   return (
-    <IconButton sx={{ position: 'absolute', right: '20px', top: '20px' }} onClick={toggleTheme} color="inherit">
-      {mode === 'light' ? <DarkModeIcon/> : <LightModeIcon />}
+    <IconButton onClick={toggleTheme} color="inherit" size='medium'>
+      {mode === 'light' ? <DarkModeIcon fontSize='large'/> : <LightModeIcon fontSize='large'/>}
     </IconButton>
   );
 };

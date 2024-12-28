@@ -16,8 +16,11 @@ export const authService = globalApi.injectEndpoints({
         }),
         getUserProfile: builder.query<IUser, void>({
             query: () => 'auth/profile'
+        }),
+        logout: builder.mutation<void, void>({
+            query: () => 'auth/logout'
         })
     })
 })
 
-export const { useLoginMutation, useGetUserProfileQuery } = authService
+export const { useLoginMutation, useGetUserProfileQuery, useLogoutMutation } = authService

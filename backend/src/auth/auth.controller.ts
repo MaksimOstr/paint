@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Redirect,
   Req,
   Res,
   UnauthorizedException,
@@ -30,7 +31,11 @@ export class AuthController {
     @userAgent() agent: string,
     @userIp() userIp: string,
   ): Promise<void> {
-    const tokens = await this.authService.generateTokens(req.user, agent, userIp)
+    const tokens = await this.authService.generateTokens(
+      req.user,
+      agent,
+      userIp,
+    )
     this.setRefreshTokenToCookies(tokens.refresh_token, res)
     res.json({ access_token: tokens.access_token })
   }
@@ -46,14 +51,21 @@ export class AuthController {
     @Res() res: Response,
     @userAgent() agent: string,
     @userIp() userIp: string,
-    @Cookie('refreshToken') refreshToken: string
+    @Cookie('refreshToken') refreshToken: string,
   ) {
-    const tokens = await this.authService.refreshTokens(refreshToken, agent, userIp)
+    const tokens = await this.authService.refreshTokens(
+      refreshToken,
+      agent,
+      userIp,
+    )
     this.setRefreshTokenToCookies(tokens.refresh_token, res)
     res.json({ access_token: tokens.access_token })
   }
 
-  private setRefreshTokenToCookies(refreshToken: Tokens['refresh_token'], res: Response): void {
+  private setRefreshTokenToCookies(
+    refreshToken: Tokens['refresh_token'],
+    res: Response,
+  ): void {
     if (!refreshToken) {
       throw new UnauthorizedException()
     }
@@ -74,14 +86,41 @@ export class AuthController {
 
   @UseGuards(GoogleAuthGuard)
   @Get('google/redirect')
+  @Redirect('http://localhost:3000/')
   async handleRedirect(
     @Req() req,
     @userAgent() agent: string,
     @userIp() userIp: string,
     @Res() res: Response,
   ) {
-    const tokens = await this.authService.generateTokens(req.user, agent, userIp)
-    this.setRefreshTokenToCookies(tokens.refresh_token, res)
-    res.redirect(`http://localhost:3000/main?token=${tokens.access_token}`)
+    const tokens = await this.authService.generateTokens(
+      req.user,
+      agent,
+      userIp,
+    )
+    if (tokens) {
+      this.setRefreshTokenToCookies(tokens.refresh_token, res)
+      return { url: `http://localhost:3000/?token=${tokens.access_token}` }
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('logout')
+  async logout(
+    @userAgent() agent: string,
+    @userIp() userIp: string,
+    @Cookie('refreshToken') refreshToken: string,
+    @Res() res: Response
+  ) {
+    
+    await this.authService.logout(refreshToken, userIp, agent)
+    
+    res.cookie('refreshToken', '', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      expires: new Date(0),
+    });
+    res.send({ message: 'Cookies cleared successfully' });
   }
 }

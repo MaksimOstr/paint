@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
-import { hash, randomBytes } from 'crypto'
+import { randomBytes } from 'crypto'
 import { RefreshToken } from '@prisma/client'
 import * as bcrypt from 'bcrypt'
 import { Tokens } from 'src/shared/types/tokens'
@@ -54,12 +54,45 @@ export class RefreshTokenService {
     userAgent: string,
     token: string,
   ): Promise<RefreshToken | false> {
+    
+    const validToken = await this.compareTokenFromMany(userAgent, userIp, token)
+    
+    if(!validToken) {
+      return false
+    }
+
+    if (validToken.expiresAt < new Date()) {
+      await this.prismaService.refreshToken.delete({
+        where: { id: validToken.id },
+      })
+      return false
+    }
+
+    return validToken
+  }
+
+  async deleteRefreshToken(userIp: string, userAgent: string, token: string) {
+
+    const validToken = await this.compareTokenFromMany(userAgent, userIp, token)
+
+    if(!validToken) {
+      return
+    }
+    
+    return await this.prismaService.refreshToken.delete({
+      where: {
+        id: validToken.id
+      }
+    })
+  }
+
+  async compareTokenFromMany(userAgent: string, userIp: string, token: string): Promise<RefreshToken | false>  {
     const storedTokens = await this.prismaService.refreshToken.findMany({
       where: { userAgent, userIp },
     })
 
     if (!storedTokens || storedTokens.length === 0) {
-      throw new UnauthorizedException()
+      return false
     }
     
     let validToken: RefreshToken | undefined
@@ -69,14 +102,6 @@ export class RefreshTokenService {
         validToken = storedToken
         break
       }
-    }
-    
-  
-    if (validToken.expiresAt < new Date()) {
-      await this.prismaService.refreshToken.delete({
-        where: { id: validToken.id },
-      })
-      return false
     }
 
     return validToken
