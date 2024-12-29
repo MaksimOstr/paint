@@ -86,7 +86,7 @@ export class AuthController {
 
   @UseGuards(GoogleAuthGuard)
   @Get('google/redirect')
-  @Redirect('http://localhost:3000/')
+  @Redirect('http://localhost:3000/redirectPage')
   async handleRedirect(
     @Req() req,
     @userAgent() agent: string,
@@ -100,7 +100,7 @@ export class AuthController {
     )
     if (tokens) {
       this.setRefreshTokenToCookies(tokens.refresh_token, res)
-      return { url: `http://localhost:3000/?token=${tokens.access_token}` }
+      return { url: `http://localhost:3000/redirectPage?token=${tokens.access_token}` }
     }
   }
 

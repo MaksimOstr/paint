@@ -77,7 +77,13 @@ export class AuthService {
   }
 
   async logout(token: string, userIp: string, userAgent: string) {
-    return await this.refreshTokenService.deleteRefreshToken(userIp, userAgent, token)
+    const deletedToken = await this.refreshTokenService.deleteRefreshToken(userIp, userAgent, token)
+
+    if(!deletedToken) {
+      throw new UnauthorizedException()
+    }
+
+    return deletedToken
   }
   
 }

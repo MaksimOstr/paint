@@ -76,7 +76,7 @@ export class RefreshTokenService {
     const validToken = await this.compareTokenFromMany(userAgent, userIp, token)
 
     if(!validToken) {
-      return
+      return false
     }
     
     return await this.prismaService.refreshToken.delete({
