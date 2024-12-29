@@ -13,12 +13,14 @@ export const authService = globalApi.injectEndpoints({
                 method: 'POST',
                 body
             }),
+            invalidatesTags: ['USER']
         }),
         getUserProfile: builder.query<IUser, void>({
-            query: () => 'auth/profile'
+            query: () => 'auth/profile',
+            providesTags: ['USER']
         }),
         logout: builder.mutation<void, void>({
-            query: () => 'auth/logout'
+            query: () => 'auth/logout',
         })
     })
 })

@@ -1,5 +1,7 @@
 .canvas {
     height: 100%;
-    margin-bottom: 20px;
     background-color: white;
+    @media (max-width: 2300px) {
+        width: 97%;
+    }
 }

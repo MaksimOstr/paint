@@ -30,7 +30,6 @@ export default function UserProfileMenu() {
     setAnchorEl(null);
   };
 
-  
   const logoutUser = () => {
     logout()
       .unwrap()

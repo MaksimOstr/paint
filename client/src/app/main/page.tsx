@@ -6,9 +6,8 @@ import React from "react";
 export const Page = () => {
   return (
     <Box
-      gap={3}
+      gap='30px'
       pt="20px"
-      width="100%"
       height="100vh"
       display="flex"
       alignItems="center"
