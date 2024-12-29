@@ -12,7 +12,7 @@ export const lightTheme: ThemeOptions = createTheme({
       main: '#ff7043',
     },
     background: {
-      default: '#f4f4f4',
+      default: '#e3e3e3',
       paper: '#ffffff',
     },
     text: {
@@ -50,7 +50,7 @@ export const darkTheme: ThemeOptions = createTheme({
       main: '#ffab91',
     },
     background: {
-      default: '#121212',
+      default: '#292929',
       paper: '#1e1e1e',
     },
     text: {

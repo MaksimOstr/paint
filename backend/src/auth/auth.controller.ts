@@ -58,6 +58,7 @@ export class AuthController {
       agent,
       userIp,
     )
+    
     this.setRefreshTokenToCookies(tokens.refresh_token, res)
     res.json({ access_token: tokens.access_token })
   }

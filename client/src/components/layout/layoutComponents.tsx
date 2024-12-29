@@ -8,7 +8,7 @@ export const LayoutComponent = () => {
  
 
   return (
-    <Paper sx={{ position: 'absolute', right: '20px', top: '20px', borderRadius: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+    <Paper elevation={6} sx={{ position: 'absolute', right: '20px', top: '20px', borderRadius: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
         <Stack spacing={1.5} direction='row' display='flex' alignItems='center' alignContent='center'>
                 <ThemeToggleButton/>
                 <UserProfileMenu/>

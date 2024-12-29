@@ -32,8 +32,6 @@ const baseQueryWithReauth: BaseQueryFn<
       localStorage.setItem('accessToken', refreshResult.data.access_token)
       // retry the initial query
       result = await baseQuery(args, api, extraOptions)
-    } else {
-      
     }
   }
   return result

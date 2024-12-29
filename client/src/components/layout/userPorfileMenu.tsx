@@ -30,12 +30,16 @@ export default function UserProfileMenu() {
     setAnchorEl(null);
   };
 
+  
   const logoutUser = () => {
     logout()
       .unwrap()
       .then(() => {
         localStorage.removeItem('accessToken')
         push("/auth");
+      })
+      .catch(() => {
+        push('/auth')
       })
   };
 
