@@ -1,50 +1,85 @@
-import { Box, IconButton, Paper, Stack, Tooltip } from "@mui/material";
+"use client";
+
+import { Box, IconButton, Paper, Slider, Stack, Tooltip } from "@mui/material";
 import React from "react";
-import BrushIcon from "@mui/icons-material/Brush";
-import RadioButtonUncheckedSharpIcon from "@mui/icons-material/RadioButtonUncheckedSharp";
-import CheckBoxOutlineBlankSharpIcon from "@mui/icons-material/CheckBoxOutlineBlankSharp";
-import ChangeHistorySharpIcon from "@mui/icons-material/ChangeHistorySharp";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
-import { DiagonalLineIcon } from "./components/DiagonalLineIcon";
-import RectangleOutlinedIcon from "@mui/icons-material/RectangleOutlined";
 import { ColorPicker } from "./components/ColorPicker";
-import { EraserIcon } from "./components/EraserIcon";
+import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
+import { tools } from "./components/tools";
+import { setSize, setTool } from "@/slices/canvas.slice";
 
 export const ToolBar = () => {
+
+
+  const { toolName, size } = useAppSelector((state) => state.canvas);
+  const dispatch = useAppDispatch();
+
+
+  const handleSettingTool = (toolId: string) => {
+    dispatch(setTool(toolId));
+  };
+
+  const getButtonStyle = (toolId: string) => ({
+    color: toolName === toolId ? "red" : "",
+  });
+
   return (
     <Box display="flex" justifyContent="center">
       <Paper elevation={6} sx={{ borderRadius: "100px" }}>
         <Stack direction="row" spacing={22}>
           <Stack spacing={7} display="flex" direction="row" alignItems="center">
-            <Stack spacing={3} direction="row" alignItems="center">
-              <Stack direction='row' spacing={1}>
-                <IconButton>
-                  <BrushIcon fontSize="large" />
-                </IconButton>
-                <IconButton>
-                  <EraserIcon />
-                </IconButton>
+            <Stack spacing={5} direction="row" alignItems="center">
+              <Stack direction="row" spacing={1}>
+                {tools.slice(0, 2).map((tool, key) => (
+                  <Tooltip key={key} title={tool.tooltip}>
+                    <IconButton
+                      onClick={() => handleSettingTool(tool.id)}
+                      size="large"
+                    >
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={getButtonStyle(tool.id)}
+                      >
+                        {tool.icon}
+                      </Box>
+                    </IconButton>
+                  </Tooltip>
+                ))}
               </Stack>
-              <ColorPicker />
+              <Stack width='250px' spacing={2} direction='row' alignItems='center'>
+                <ColorPicker />
+                <Slider
+                  value={size}
+                  min={1}
+                  max={50}
+                  step={1}
+                  onChange={(e, value) => dispatch(setSize(value))}
+                  aria-labelledby="brush-size-slider"
+                />
+              </Stack>
             </Stack>
             <Stack direction="row" spacing={1}>
-              <IconButton size="small">
-                <CheckBoxOutlineBlankSharpIcon fontSize="medium" />
-              </IconButton>
-              <IconButton size="small">
-                <RectangleOutlinedIcon fontSize="medium" />
-              </IconButton>
-              <IconButton size="small">
-                <RadioButtonUncheckedSharpIcon fontSize="medium" />
-              </IconButton>
-              <IconButton size="small">
-                <ChangeHistorySharpIcon fontSize="medium" />
-              </IconButton>
-              <IconButton size="small">
-                <DiagonalLineIcon />
-              </IconButton>
+              {tools.slice(2, tools.length).map((tool, key) => (
+                <Tooltip key={key} title={tool.tooltip}>
+                  <IconButton
+                    onClick={() => handleSettingTool(tool.id)}
+                    size="medium"
+                  >
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      sx={getButtonStyle(tool.id)}
+                    >
+                      {tool.icon}
+                    </Box>
+                  </IconButton>
+                </Tooltip>
+              ))}
             </Stack>
           </Stack>
 

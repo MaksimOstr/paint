@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { globalApi } from './api/globalApi'
 import authReducer from './slices/auth.slice'
+import canvasReducer from './slices/canvas.slice'
 
 
 
@@ -10,6 +11,7 @@ export const makeStore = () => {
     reducer: {
         [globalApi.reducerPath]: globalApi.reducer,
         auth: authReducer,
+        canvas: canvasReducer
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(globalApi.middleware),

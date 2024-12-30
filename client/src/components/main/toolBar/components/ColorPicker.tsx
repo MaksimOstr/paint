@@ -1,27 +1,28 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { TextField } from "@mui/material";
+import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
+import { setColor } from "@/slices/canvas.slice";
 
 export const ColorPicker = () => {
-  const [color, setColor] = useState("#000000");
 
-  const handleColorChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-    setColor(event.target.value);
-  };
+  const {color} = useAppSelector((state) => state.canvas);
+  const dispatch = useAppDispatch();
+
 
   return (
     <TextField
       sx={{
         "& input[type=color]": {
-          padding: '3px',
-          width: '30px',
-          height: '27px',
+          padding: "3px",
+          width: "60px",
+          height: "35px",
         },
       }}
       type="color"
       value={color}
-      onChange={handleColorChange}
+      onChange={(e) => dispatch(setColor(e.target.value))}
     />
   );
 };
