@@ -8,7 +8,6 @@ import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import {
   useGetUserProfileQuery,
@@ -17,7 +16,6 @@ import {
 import { useRouter } from "next/navigation";
 
 export default function UserProfileMenu() {
-
   const { push } = useRouter();
   const { data, isLoading } = useGetUserProfileQuery();
   const [logout] = useLogoutMutation();
@@ -34,14 +32,14 @@ export default function UserProfileMenu() {
     logout()
       .unwrap()
       .then(() => {
-        localStorage.removeItem('accessToken')
+        localStorage.removeItem("accessToken");
         push("/auth");
       })
       .catch(() => {
-        push('/auth')
-      })
+        push("/auth");
+      });
   };
-
+  console.log(data);
   return (
     <>
       {isLoading ? (
@@ -59,7 +57,10 @@ export default function UserProfileMenu() {
                 aria-haspopup="true"
                 aria-expanded={open ? "true" : undefined}
               >
-                <Avatar sx={{ width: 42, height: 42 }}>
+                <Avatar
+                  src={data?.profileLogo !== null ? data?.profileLogo : ""}
+                  sx={{ width: 42, height: 42 }}
+                >
                   {data?.username[0]}
                 </Avatar>
               </IconButton>
@@ -102,14 +103,14 @@ export default function UserProfileMenu() {
             transformOrigin={{ horizontal: "right", vertical: "top" }}
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
-            <MenuItem onClick={handleClose}>
-              <Avatar /> {data?.username}
-            </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <ListItemIcon>
-                <Settings fontSize="small" />
-              </ListItemIcon>
-              Settings
+            <MenuItem onClick={() => push("/main/profile/settings")}>
+              <Avatar
+                src={data?.profileLogo !== null ? data?.profileLogo : ""}
+                sx={{ width: 42, height: 42 }}
+              >
+                {data?.username[0]}
+              </Avatar>{" "}
+              {data?.username}
             </MenuItem>
             <MenuItem onClick={() => logoutUser()}>
               <ListItemIcon>

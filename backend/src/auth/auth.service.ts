@@ -21,12 +21,13 @@ export class AuthService {
     username: string,
     pass?: string,
     authMethod?: AuthMethod,
+    profileLogo?: string
   ): Promise<UserWithoutPassword> {
     const user = await this.userService.findUserByIdOrUsername(username)
 
     if (authMethod === 'GOOGLE') {
       if (!user) {
-        return await this.userService.createUser({ username }, authMethod)
+        return await this.userService.createUser({ username }, profileLogo, authMethod)
       }
     } else if (!(user && (await bcrypt.compare(pass, user.password)))) {
       return null

@@ -16,7 +16,7 @@ export class UserService {
 
     
 
-    async createUser(data: CreateUserDto, authMethod?: AuthMethod ): Promise<UserWithoutPassword> {
+    async createUser(data: CreateUserDto, profileLogo?: string, authMethod?: AuthMethod ): Promise<UserWithoutPassword> {
         const { username, password } = data
 
         return await this.prismaService.user.create({
@@ -24,6 +24,7 @@ export class UserService {
                 username,
                 password: password ? await bcrypt.hash(password, await bcrypt.genSalt(10)) : null,
                 role: ['USER'],
+                profileLogo,
                 authMethod: authMethod
             },
             select: userSelect

@@ -12,4 +12,5 @@ export interface IUser {
     id: string
     username: string
     role: Array<string>
+    profileLogo: string | null
 }
