@@ -9,13 +9,15 @@ import { UserWithoutPassword } from 'src/shared/types/userWithoutPassword';
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {
-    super();
+    super({
+      usernameField: 'email'
+    });
   }
 
-  async validate(username: string, password: string): Promise<UserWithoutPassword> {
-    const user = await this.authService.validateUser(username, password);
+  async validate(email: string, password: string): Promise<UserWithoutPassword> {
+    const user = await this.authService.validateUser(email, undefined, password);
     if (!user) {
-      throw new UnauthorizedException('Wrong username or password!');
+      throw new UnauthorizedException('Wrong email or password!');
     }
     return user;
   }

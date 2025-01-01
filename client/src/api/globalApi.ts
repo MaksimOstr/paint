@@ -22,7 +22,6 @@ const baseQueryWithReauth: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-  console.log('srabotalo')
   let result = await baseQuery(args, api, extraOptions)
   if (result.error && result.error.status === 401) {
     const refreshResult = await baseQuery('auth/refresh', api, extraOptions) as QueryReturnValue<AuthRequest, FetchBaseQueryError, FetchBaseQueryMeta>

@@ -18,16 +18,17 @@ export class AuthService {
   ) {}
 
   async validateUser(
-    username: string,
+    email: string,
+    username?: string, 
     pass?: string,
     authMethod?: AuthMethod,
     profileLogo?: string
   ): Promise<UserWithoutPassword> {
-    const user = await this.userService.findUserByIdOrUsername(username)
-
+    
+    const user = await this.userService.findUserByIdOrEmail(email)
     if (authMethod === 'GOOGLE') {
       if (!user) {
-        return await this.userService.createUser({ username }, profileLogo, authMethod)
+        return await this.userService.createUser({ username, email }, profileLogo, authMethod)
       }
     } else if (!(user && (await bcrypt.compare(pass, user.password)))) {
       return null
@@ -72,7 +73,7 @@ export class AuthService {
       throw new UnauthorizedException()
     }
 
-    const { password, ...result } = await this.userService.findUserByIdOrUsername(validRefreshToken.userId)
+    const { password, ...result } = await this.userService.findUserByIdOrEmail(validRefreshToken.userId)
 
     return await this.generateTokens(result, userAgent, userIp)
   }

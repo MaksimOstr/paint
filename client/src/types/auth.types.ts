@@ -1,5 +1,5 @@
 export interface IUserAuth {
-    username: string
+    email: string
     password: string
 }
 
@@ -11,6 +11,7 @@ export interface AuthRequest {
 export interface IUser {
     id: string
     username: string
+    email: string
     role: Array<string>
     profileLogo: string | null
 }

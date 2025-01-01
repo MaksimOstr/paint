@@ -1,6 +1,9 @@
 import { object, string, ref } from "yup";
 
 export const formSchema = object().shape({
+  email: string()
+  .required('Email is required')
+  .email('It should be an email'),
   username: string()
     .required("Username is required")
     .min(3, "Username length should be at least 3 characters")

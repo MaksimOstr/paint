@@ -21,7 +21,7 @@ export const Form: React.FC = () => {
     formState: { errors },
   } = useForm<IUserAuth>({
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
     resolver: yupResolver(formSchema),
@@ -29,6 +29,7 @@ export const Form: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<IUserAuth> = async (data) => {
+    console.log(data)
     login(data)
       .unwrap()
       .then((res) => {
@@ -37,7 +38,7 @@ export const Form: React.FC = () => {
         push("/main");
       })
       .catch(() => {
-        toast.error("Incorrect username or password!");
+        toast.error("Incorrect email or password!");
       });
   };
 
@@ -51,17 +52,17 @@ export const Form: React.FC = () => {
       >
         <Controller
           control={control}
-          name="username"
+          name="email"
           rules={{ required: true }}
           render={({ field }) => (
             <TextField
-              helperText={errors.username?.message}
-              error={!!errors.username}
+              helperText={errors.email?.message}
+              error={!!errors.email}
               size="medium"
               {...field}
               fullWidth
               variant="outlined"
-              placeholder="Enter username"
+              placeholder="Enter an email"
             />
           )}
         />

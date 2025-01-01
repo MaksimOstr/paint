@@ -11,8 +11,7 @@ export const Settings = () => {
       justifyContent='center'
       alignItems='center'
     >
-      <Paper>
-        <img src='https://lh3.googleusercontent.com/a/ACg8ocLi-iaE1Elyx_qG3V-mv-aqteSRitMT9qcmFPeYaWxWvbAlwQ=s96-c'/>
+      <Paper sx={{ p: 2, borderRadius: '15px' }} elevation={6}>
         <Form/>
       </Paper>
     </Box>

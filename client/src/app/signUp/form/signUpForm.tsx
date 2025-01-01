@@ -21,6 +21,7 @@ export const Form: React.FC = () => {
     formState: { errors },
   } = useForm<ISignUpForm>({
     defaultValues: {
+      email: "",
       username: "",
       password: "",
       confirmPassword: "",
@@ -51,6 +52,22 @@ export const Form: React.FC = () => {
         alignItems="center"
         spacing={2}
       >
+         <Controller
+          control={control}
+          name="email"
+          rules={{ required: true }}
+          render={({ field }) => (
+            <TextField
+              helperText={errors.email?.message}
+              error={!!errors.email}
+              size="medium"
+              {...field}
+              fullWidth
+              variant="outlined"
+              placeholder="Enter an email"
+            />
+          )}
+        />
         <Controller
           control={control}
           name="username"

@@ -19,7 +19,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayDisconnect, OnGate
   server: Server
 
   afterInit(server: any) {
-      console.log('tes')
+      
   }
 
   handleConnection(client: any, ...args: any[]) {

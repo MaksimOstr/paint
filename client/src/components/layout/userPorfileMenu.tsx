@@ -14,6 +14,7 @@ import {
   useLogoutMutation,
 } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function UserProfileMenu() {
   const { push } = useRouter();
@@ -27,19 +28,19 @@ export default function UserProfileMenu() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
   const logoutUser = () => {
     logout()
       .unwrap()
       .then(() => {
         localStorage.removeItem("accessToken");
+        toast.success('You logged out!')
         push("/auth");
       })
       .catch(() => {
         push("/auth");
       });
   };
-  console.log(data);
+
   return (
     <>
       {isLoading ? (

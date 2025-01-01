@@ -1,4 +1,4 @@
-import { Box, Paper, Stack, Typography } from "@mui/material";
+import { Box, Link, Paper, Stack, Typography } from "@mui/material";
 import React from "react";
 import { Form } from "./form/signUpForm";
 import { formBodyProps } from "./signUp.styles";
@@ -19,6 +19,16 @@ export const SignUp = () => {
           </Typography>
           <Form />
         </Stack>
+        <Stack
+              mt={3}
+              spacing={1}
+              direction="row"
+              display="flex"
+              justifyContent="center"
+            >
+              <Typography variant="body2">You already have an account?</Typography>
+              <Link variant="body2" href="/auth">Sign in</Link>
+            </Stack>
       </Paper>
     </Box>
   );
