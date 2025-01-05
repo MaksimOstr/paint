@@ -17,7 +17,6 @@ export class UserService {
 
   async createUser(
     data: CreateUserDto,
-    profileLogo?: string,
     authMethod?: AuthMethod,
   ): Promise<UserWithoutPassword> {
     const { username, password, email } = data
@@ -30,7 +29,6 @@ export class UserService {
           ? await bcrypt.hash(password, await bcrypt.genSalt(10))
           : null,
         role: ['USER'],
-        profileLogo,
         authMethod: authMethod,
       },
       select: userSelect,
@@ -38,7 +36,6 @@ export class UserService {
   }
 
   async findUserByIdOrEmail(param: string): Promise<User | null> {
-    console.log(param)
     return await this.prismaService.user.findFirst({
       where: {
         OR: [{ email: param }, { id: param }],
@@ -48,17 +45,19 @@ export class UserService {
   
   async updateUserLogoAndUsername(userData: UserWithoutPassword, updateData: UpdateUserDto) {
 
-    const { username, id, email, role } = userData
+    const { username, id, email, role, profileLogo } = userData
+
+    const logoPath = updateData.profileLogo ? `/uploads/${updateData.profileLogo.filename}` : profileLogo;
 
     const payload: Omit<UserWithoutPassword, 'authMethod'> = {
-        email,
-        id,
-        username: updateData.username,
-        role,
-        profileLogo: updateData.profileLogo
-    }
+      email,
+      id,
+      username: updateData.username,
+      role,
+      profileLogo: logoPath
+  }
 
-    const access_token = await this.jwtService.signAsync(payload)
+  const access_token = await this.jwtService.signAsync(payload)
 
     await this.prismaService.user.update({
       where: {
@@ -67,10 +66,10 @@ export class UserService {
       },
       data: {
         username: updateData.username,
-        profileLogo: updateData.profileLogo,
+        profileLogo: logoPath
       }
     })
 
-    return {access_token}
+    return { access_token }
   }
 }

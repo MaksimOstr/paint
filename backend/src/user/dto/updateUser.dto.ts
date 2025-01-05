@@ -8,5 +8,5 @@ export class UpdateUserDto {
 
   @ValidateIf((object) => object.profileLogo !== null)
   @IsUrl()
-  profileLogo: string
+  profileLogo: Express.Multer.File | null
 }

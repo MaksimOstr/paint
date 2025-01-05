@@ -15,6 +15,8 @@ import {
 } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { API_URL } from "../../../shared/constants";
+
 
 export default function UserProfileMenu() {
   const { push } = useRouter();
@@ -59,7 +61,7 @@ export default function UserProfileMenu() {
                 aria-expanded={open ? "true" : undefined}
               >
                 <Avatar
-                  src={data?.profileLogo !== null ? data?.profileLogo : ""}
+                  src={data?.profileLogo !== null ? `${API_URL}${data?.profileLogo}` : ""}
                   sx={{ width: 42, height: 42 }}
                 >
                   {data?.username[0]}
@@ -106,7 +108,7 @@ export default function UserProfileMenu() {
           >
             <MenuItem onClick={() => push("/main/profile/settings")}>
               <Avatar
-                src={data?.profileLogo !== null ? data?.profileLogo : ""}
+                src={data?.profileLogo !== null ? `${API_URL}${data?.profileLogo}` : ""}
                 sx={{ width: 42, height: 42 }}
               >
                 {data?.username[0]}

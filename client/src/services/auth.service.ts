@@ -1,5 +1,6 @@
 import { globalApi } from '@/api/globalApi'
-import { AuthRequest, IUser, IUserAuth } from '@/types/auth.types'
+import { AuthRequest, IUserAuth } from '@/types/auth.types'
+import { IUser } from '@/types/user.types'
 
 
 
@@ -13,11 +14,11 @@ export const authService = globalApi.injectEndpoints({
                 method: 'POST',
                 body
             }),
-            invalidatesTags: ['USER']
+            invalidatesTags: ['User']
         }),
         getUserProfile: builder.query<IUser, void>({
             query: () => 'auth/profile',
-            providesTags: ['USER']
+            providesTags: ['User'],
         }),
         logout: builder.mutation<void, void>({
             query: () => 'auth/logout',

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import styles from "./canvas.module.scss";
 import { Box } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
@@ -9,14 +9,16 @@ import { Eraser } from "./tools/Eraser";
 import { Rect } from "./tools/Rect";
 import { Square } from "./tools/Square";
 import Line from "./tools/Line";
+import { CanvasContext } from "@/app/main/page";
+import { pushToUndo } from "@/slices/canvas.slice";
 
 export const Canvas = () => {
   const dispatch = useAppDispatch();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toolName, size, color } = useAppSelector((state) => state.canvas);
+  const { setValue } = useContext(CanvasContext);
 
   useEffect(() => {
-    console.log(toolName);
     let tool;
     if (canvasRef.current) {
       switch (toolName) {
@@ -37,12 +39,16 @@ export const Canvas = () => {
           break
       }
     }
-
+    
     if (tool && tool.ctx) {
       tool.lineSize = size;
       tool.fillColor = color;
     }
   }, [dispatch, size, toolName, color]);
+
+  const mouseDownHandler = () => {
+    dispatch(pushToUndo(canvasRef.current?.toDataURL()))
+  }
 
   return (
     <Box
@@ -54,6 +60,8 @@ export const Canvas = () => {
       mb="30px"
     >
       <canvas
+        onMouseMove={() => setValue(canvasRef.current)}
+        onMouseDown={() => mouseDownHandler()}
         ref={canvasRef}
         className={styles.canvas}
         width={1920}

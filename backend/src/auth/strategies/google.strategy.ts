@@ -21,6 +21,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(accessToken: string, refreshToken: string, profile ): Promise<UserWithoutPassword> {
-     return await this.authService.validateUser(profile.emails[0].value, profile.displayName.replace(/\s+/g, ''), undefined, 'GOOGLE', profile.photos[0].value);
+     return await this.authService.validateUser(profile.emails[0].value, profile.displayName.replace(/\s+/g, ''), undefined, 'GOOGLE');
   }
 }
+

@@ -9,6 +9,8 @@ import { RefreshTokenModule } from './refreshToken/refreshToken.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { CacheModule } from '@nestjs/cache-manager';
 import { EventsModule } from './events/event.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -17,7 +19,11 @@ import { EventsModule } from './events/event.module';
     UserModule,
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true }),
-    EventsModule
+    EventsModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads'
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

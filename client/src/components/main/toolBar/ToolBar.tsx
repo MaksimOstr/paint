@@ -1,24 +1,49 @@
 "use client";
 
 import { Box, IconButton, Paper, Slider, Stack, Tooltip } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import { ColorPicker } from "./components/ColorPicker";
 import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
 import { tools } from "./components/tools";
-import { setSize, setTool } from "@/slices/canvas.slice";
+import { Undo, setSize, setTool } from "@/slices/canvas.slice";
+import { CanvasContext } from "@/app/main/page";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 
 export const ToolBar = () => {
-
-
-  const { toolName, size } = useAppSelector((state) => state.canvas);
+  const { toolName, size, undoStack } = useAppSelector((state) => state.canvas);
   const dispatch = useAppDispatch();
+  const { canvas } = useContext(CanvasContext);
 
+  const clearCanvas = () => {
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      ctx?.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  };
 
   const handleSettingTool = (toolId: string) => {
     dispatch(setTool(toolId));
+  };
+
+  const undo = () => {
+    if (canvas) {
+      const ctx = canvas.getContext("2d")!;
+      if (undoStack.length > 0) {
+        const lastState = undoStack[undoStack.length - 1];
+        dispatch(Undo());
+        const img = new Image();
+        img.src = lastState;
+        img.onload = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
   };
 
   const getButtonStyle = (toolId: string) => ({
@@ -50,7 +75,12 @@ export const ToolBar = () => {
                   </Tooltip>
                 ))}
               </Stack>
-              <Stack width='250px' spacing={2} direction='row' alignItems='center'>
+              <Stack
+                width="250px"
+                spacing={2}
+                direction="row"
+                alignItems="center"
+              >
                 <ColorPicker />
                 <Slider
                   value={size}
@@ -90,7 +120,7 @@ export const ToolBar = () => {
             alignItems="center"
           >
             <Tooltip title="Undo">
-              <IconButton size="small">
+              <IconButton onClick={() => undo()} size="small">
                 <UndoIcon fontSize="large" />
               </IconButton>
             </Tooltip>
@@ -99,7 +129,12 @@ export const ToolBar = () => {
                 <RedoIcon fontSize="large" />
               </IconButton>
             </Tooltip>
-            <Tooltip sx={{ ml: 1 }} title="Save">
+            <Tooltip sx={{ ml: 1 }} title="Clear canvas">
+              <IconButton onClick={() => clearCanvas()}>
+                <DeleteOutlineOutlinedIcon fontSize="large" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Save">
               <IconButton>
                 <SaveOutlinedIcon fontSize="large" />
               </IconButton>
