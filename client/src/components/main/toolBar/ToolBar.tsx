@@ -8,12 +8,12 @@ import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import { ColorPicker } from "./components/ColorPicker";
 import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
 import { tools } from "./components/tools";
-import { Undo, setSize, setTool } from "@/slices/canvas.slice";
+import { Redo, Undo, setSize, setTool } from "@/slices/canvas.slice";
 import { CanvasContext } from "@/app/main/page";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 
 export const ToolBar = () => {
-  const { toolName, size, undoStack } = useAppSelector((state) => state.canvas);
+  const { toolName, size, undoStack, redoStack } = useAppSelector((state) => state.canvas);
   const dispatch = useAppDispatch();
   const { canvas } = useContext(CanvasContext);
 
@@ -32,16 +32,32 @@ export const ToolBar = () => {
     if (canvas) {
       const ctx = canvas.getContext("2d")!;
       if (undoStack.length > 0) {
+        console.log('undo')
+        console.log(...undoStack)
         const lastState = undoStack[undoStack.length - 1];
-        dispatch(Undo());
+        dispatch(Undo(canvas.toDataURL()));
         const img = new Image();
         img.src = lastState;
         img.onload = () => {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         };
-      } else {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+  };
+
+  const redo = () => {
+    if (canvas) {
+      const ctx = canvas.getContext("2d")!;
+      if (redoStack.length > 0) {
+        const lastState = redoStack[redoStack.length - 1];
+        dispatch(Redo(canvas.toDataURL()));
+        const img = new Image();
+        img.src = lastState;
+        img.onload = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
       }
     }
   };
@@ -124,7 +140,7 @@ export const ToolBar = () => {
                 <UndoIcon fontSize="large" />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Redo">
+            <Tooltip onClick={() => redo()} title="Redo">
               <IconButton size="small">
                 <RedoIcon fontSize="large" />
               </IconButton>

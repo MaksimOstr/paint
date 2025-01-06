@@ -35,12 +35,13 @@ export const canvasSlice = createSlice({
     pushToRedo(state, action) {
       state.redoStack.push(action.payload);
     },
-    Undo(state) {
-      const lastState = state.undoStack.pop()!;
-      state.redoStack.push(lastState);
+    Undo(state, action) {
+      state.undoStack.pop();
+      state.redoStack.push(action.payload);
     },
     Redo(state, action) {
-      
+      state.redoStack.pop();
+      state.undoStack.push(action.payload);
     },
   },
 });
@@ -52,6 +53,6 @@ export const {
   Undo,
   Redo,
   pushToUndo,
-  pushToRedo,
+  pushToRedo
 } = canvasSlice.actions;
 export default canvasSlice.reducer;

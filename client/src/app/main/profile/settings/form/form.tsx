@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Avatar, Button, Stack, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -32,7 +32,7 @@ export const Form: React.FC = () => {
       username: data?.username,
     });
   }, [data, reset]);
-  
+
   const handleFileChange = (fileList: FileList | null) => {
     if (fileList && fileList.length > 0) {
       const file = fileList[0];
@@ -43,7 +43,6 @@ export const Form: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<IUpdateForm> = (submitData) => {
-
     const formData = new FormData();
     formData.append("username", submitData.username);
     if (submitData.profileLogo && submitData.profileLogo.length !== 0) {
@@ -51,12 +50,12 @@ export const Form: React.FC = () => {
       setAvatarPreview(previewURL);
       formData.append("profileLogo", submitData.profileLogo[0]);
     }
-    
+
     updateUser(formData)
       .unwrap()
       .catch(() => {
         toast.error("An error has occurred!");
-      })
+      });
   };
 
   return (
@@ -79,7 +78,7 @@ export const Form: React.FC = () => {
             />
           )}
         />
-        <Stack direction='row' alignItems='center' spacing={2}>
+        <Stack direction="row" alignItems="center" spacing={2}>
           {avatarPreview ? (
             <Avatar
               src={avatarPreview}

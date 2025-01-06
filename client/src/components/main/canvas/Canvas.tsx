@@ -11,12 +11,22 @@ import { Square } from "./tools/Square";
 import Line from "./tools/Line";
 import { CanvasContext } from "@/app/main/page";
 import { pushToUndo } from "@/slices/canvas.slice";
+import { loadCanvas, saveCanvas } from "./functions/canvasFunctions";
 
 export const Canvas = () => {
   const dispatch = useAppDispatch();
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const { toolName, size, color } = useAppSelector((state) => state.canvas);
   const { setValue } = useContext(CanvasContext);
+
+  useEffect(() => {
+    loadCanvas(canvasRef)
+    window.addEventListener("beforeunload", () => saveCanvas(canvasRef));
+
+    return () => {
+      window.removeEventListener("beforeunload", () => saveCanvas(canvasRef));
+    };
+  }, []);
 
   useEffect(() => {
     let tool;
@@ -31,15 +41,15 @@ export const Canvas = () => {
         case "rect":
           tool = new Rect(canvasRef.current);
           break;
-        case "square": 
-          tool = new Square(canvasRef.current)
-          break
+        case "square":
+          tool = new Square(canvasRef.current);
+          break;
         case "line":
-          tool = new Line(canvasRef.current)
-          break
+          tool = new Line(canvasRef.current);
+          break;
       }
     }
-    
+
     if (tool && tool.ctx) {
       tool.lineSize = size;
       tool.fillColor = color;
@@ -47,8 +57,9 @@ export const Canvas = () => {
   }, [dispatch, size, toolName, color]);
 
   const mouseDownHandler = () => {
-    dispatch(pushToUndo(canvasRef.current?.toDataURL()))
-  }
+    dispatch(pushToUndo(canvasRef.current?.toDataURL()));
+    localStorage.setItem("canvasUrl", canvasRef.current!.toDataURL());
+  };
 
   return (
     <Box
