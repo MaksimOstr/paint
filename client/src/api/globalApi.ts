@@ -38,5 +38,5 @@ export const globalApi = createApi({
     reducerPath: 'globalApi',
     baseQuery: baseQueryWithReauth,
     endpoints: () => ({}),
-    tagTypes: ['User']
+    tagTypes: ['User', 'Drawing']
 })

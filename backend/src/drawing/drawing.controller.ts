@@ -12,12 +12,12 @@ export class DrawingController {
     ) {}
 
 
-    @Post('create')
-    async createDrawing(
+    @Post('save')
+    async saveDrawing(
         @Req() req,
         @Body() data: CreateDrawingDto
     ) {
-        return await this.drawingService.create(data, req.user.id)
+        return await this.drawingService.save(data, req.user.id)
     }
 
     @UseGuards(JwtAuthGuard)

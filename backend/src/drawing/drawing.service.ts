@@ -8,7 +8,7 @@ export class DrawingService {
         private prismaService: PrismaService
     ) {}
 
-    async create(drawingData: CreateDrawingDto,  userId: string) {
+    async save(drawingData: CreateDrawingDto,  userId: string) {
         const { title, imageData } = drawingData
 
         return await this.prismaService.drawing.create({

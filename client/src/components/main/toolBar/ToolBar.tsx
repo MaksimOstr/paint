@@ -4,19 +4,19 @@ import { Box, IconButton, Paper, Slider, Stack, Tooltip } from "@mui/material";
 import React, { useContext } from "react";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
-import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import { ColorPicker } from "./components/ColorPicker";
 import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
 import { tools } from "./components/tools";
 import { Redo, Undo, setSize, setTool } from "@/slices/canvas.slice";
 import { CanvasContext } from "@/app/main/page";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import { SaveButton } from "./components/saveButton";
 
 export const ToolBar = () => {
   const { toolName, size, undoStack, redoStack } = useAppSelector((state) => state.canvas);
   const dispatch = useAppDispatch();
   const { canvas } = useContext(CanvasContext);
-
+ 
   const clearCanvas = () => {
     if (canvas) {
       const ctx = canvas.getContext("2d");
@@ -59,6 +59,8 @@ export const ToolBar = () => {
       }
     }
   };
+
+
 
   const getButtonStyle = (toolId: string) => ({
     color: toolName === toolId ? "red" : "",
@@ -148,11 +150,7 @@ export const ToolBar = () => {
                 <DeleteOutlineOutlinedIcon fontSize="large" />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Save">
-              <IconButton>
-                <SaveOutlinedIcon fontSize="large" />
-              </IconButton>
-            </Tooltip>
+            <SaveButton canvas={canvas!}/>
           </Stack>
         </Stack>
       </Paper>
