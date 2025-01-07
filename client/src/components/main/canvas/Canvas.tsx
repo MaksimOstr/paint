@@ -20,6 +20,7 @@ export const Canvas = () => {
   const { setValue } = useContext(CanvasContext);
 
   useEffect(() => {
+    setValue(canvasRef.current)
     loadCanvas(canvasRef)
     window.addEventListener("beforeunload", () => saveCanvas(canvasRef));
 
@@ -71,7 +72,6 @@ export const Canvas = () => {
       mb="30px"
     >
       <canvas
-        onMouseMove={() => setValue(canvasRef.current)}
         onMouseDown={() => mouseDownHandler()}
         ref={canvasRef}
         className={styles.canvas}

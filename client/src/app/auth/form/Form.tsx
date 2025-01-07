@@ -29,7 +29,6 @@ export const Form: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<IUserAuth> = async (data) => {
-    console.log(data)
     login(data)
       .unwrap()
       .then((res) => {

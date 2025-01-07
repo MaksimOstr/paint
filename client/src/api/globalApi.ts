@@ -7,7 +7,6 @@ const baseQuery = fetchBaseQuery({
     baseUrl: `${API_URL}/api`,
     credentials: 'include',
     prepareHeaders(headers) {
-        console.log('отработало и токен изменился')
         const token = localStorage.getItem('accessToken')
         if(token) {
             headers.set('Authorization', `Bearer ${token}`)

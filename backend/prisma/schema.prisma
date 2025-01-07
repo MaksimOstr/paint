@@ -20,9 +20,11 @@ model User {
 }
 
 model Drawing {
-  id       String @id @default(uuid())
-  author   User   @relation(fields: [authorId], references: [id])
-  authorId String
+  id        String @id @default(uuid())
+  title     String
+  imageData String
+  author    User   @relation(fields: [authorId], references: [id])
+  authorId  String
 }
 
 model RefreshToken {

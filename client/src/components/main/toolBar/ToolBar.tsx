@@ -32,8 +32,6 @@ export const ToolBar = () => {
     if (canvas) {
       const ctx = canvas.getContext("2d")!;
       if (undoStack.length > 0) {
-        console.log('undo')
-        console.log(...undoStack)
         const lastState = undoStack[undoStack.length - 1];
         dispatch(Undo(canvas.toDataURL()));
         const img = new Image();
