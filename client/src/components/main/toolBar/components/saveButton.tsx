@@ -15,23 +15,31 @@ import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import { useSaveDrawingMutation } from "@/services/drawing.service";
 import { toast } from "react-toastify";
 
+
 export const SaveButton = ({ canvas }: { canvas: HTMLCanvasElement }) => {
   const [title, setTitle] = useState("");
   const [showInput, setShowInput] = useState(false);
   const [saveDrawing] = useSaveDrawingMutation();
 
   const save = () => {
-    saveDrawing({
-      title,
-      imageData: canvas!.toDataURL(),
-    })
-      .unwrap()
-      .then((res) => {
-        toast.success(`You successfully saved a drawing with the title ${title}`)
-        setShowInput(false);
-        setTitle('')
-        console.log(res)
-      });
+    canvas.toBlob((blob) => {
+      const formData = new FormData();
+      if(blob) {
+        formData.append('file', blob, 'canvas.png');
+        formData.append('title', title)
+      }
+
+      saveDrawing(formData)
+        .unwrap()
+        .then(() => {
+            setTitle('')
+            setShowInput(false)
+            toast.success("You successfully saved the drawing!")
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }, "image/png");
   };
 
   return (

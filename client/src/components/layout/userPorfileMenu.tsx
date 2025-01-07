@@ -34,7 +34,8 @@ export default function UserProfileMenu() {
     logout()
       .unwrap()
       .then(() => {
-        localStorage.removeItem("accessToken");
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('canvasUrl')
         toast.success('You logged out!')
         push("/auth");
       })

@@ -1,10 +1,10 @@
 import { globalApi } from "@/api/globalApi";
-import { ISaveDrawing } from "@/types/drawing.types";
+import { IDrawing } from "@/types/drawing.types";
 
 export const drawingService = globalApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
-        saveDrawing: builder.mutation<void, ISaveDrawing>({
+        saveDrawing: builder.mutation<IDrawing, FormData>({
             query: (body) => ({
                 url: 'drawing/save',
                 method: 'POST',
@@ -12,11 +12,20 @@ export const drawingService = globalApi.injectEndpoints({
             }),
             invalidatesTags: ['Drawing']
         }),
-        getDrawings: builder.query<void, void>({
+        getDrawings: builder.query<IDrawing[], void>({
             query: () => '/drawing',
             providesTags: ['Drawing']
+        }),
+
+        deleteDrawing: builder.mutation<void, { id: string }>({
+            query: (body) => ({
+                url: 'drawing/delete',
+                method: 'DELETE',
+                body
+            }),
+            invalidatesTags: ['Drawing']
         })
     })
 })
 
-export const {  useSaveDrawingMutation, useGetDrawingsQuery } = drawingService
+export const {  useSaveDrawingMutation, useGetDrawingsQuery, useDeleteDrawingMutation } = drawingService

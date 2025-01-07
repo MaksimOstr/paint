@@ -7,21 +7,25 @@ import RedoIcon from "@mui/icons-material/Redo";
 import { ColorPicker } from "./components/ColorPicker";
 import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
 import { tools } from "./components/tools";
-import { Redo, Undo, setSize, setTool } from "@/slices/canvas.slice";
+import { setSize, setTool } from "@/slices/tool.slice";
 import { CanvasContext } from "@/app/main/page";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import { SaveButton } from "./components/saveButton";
+import { pushToUndo, Redo, Undo } from "@/slices/canvas.slice";
 
 export const ToolBar = () => {
-  const { toolName, size, undoStack, redoStack } = useAppSelector((state) => state.canvas);
+  const { toolName, size } = useAppSelector((state) => state.tool);
+  const { redoStack, undoStack } = useAppSelector((state) => state.canvas)
   const dispatch = useAppDispatch();
   const { canvas } = useContext(CanvasContext);
  
   const clearCanvas = () => {
     if (canvas) {
+      dispatch(pushToUndo(canvas.toDataURL()));
       const ctx = canvas.getContext("2d");
       ctx?.clearRect(0, 0, canvas.width, canvas.height);
     }
+    localStorage.removeItem('canvasUrl')
   };
 
   const handleSettingTool = (toolId: string) => {
@@ -32,6 +36,7 @@ export const ToolBar = () => {
     if (canvas) {
       const ctx = canvas.getContext("2d")!;
       if (undoStack.length > 0) {
+        console.log(undoStack + 'testeste')
         const lastState = undoStack[undoStack.length - 1];
         dispatch(Undo(canvas.toDataURL()));
         const img = new Image();
@@ -40,6 +45,7 @@ export const ToolBar = () => {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         };
+        localStorage.setItem('canvasUrl', lastState)
       }
     }
   };
@@ -56,11 +62,10 @@ export const ToolBar = () => {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         };
+        localStorage.setItem('canvasUrl', lastState)
       }
     }
   };
-
-
 
   const getButtonStyle = (toolId: string) => ({
     color: toolName === toolId ? "red" : "",

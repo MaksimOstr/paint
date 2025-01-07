@@ -1,58 +1,50 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 interface ToolState {
-  toolName: string;
-  color: string;
-  size: number;
-  undoStack: Array<string>;
-  redoStack: Array<string>;
-}
-
-const initialState: ToolState = {
-  toolName: "brush",
-  color: "#000000",
-  size: 5,
-  undoStack: [],
-  redoStack: [],
-};
+    undoStack: Array<string>;
+    redoStack: Array<string>;
+  }
+  
+  const initialState: ToolState = {
+    undoStack: [],
+    redoStack: [],
+  };
 
 export const canvasSlice = createSlice({
-  name: "canvas",
-  initialState,
-  reducers: {
-    setTool(state, action: PayloadAction<string>) {
-      state.toolName = action.payload;
+    name: "canvas",
+    initialState,
+    reducers: {
+      pushToUndo(state, action) {
+        state.undoStack.push(action.payload);
+      },
+      pushToRedo(state, action) {
+        state.redoStack.push(action.payload);
+      },
+      setUndoEmpty(state) {
+        state.undoStack = []
+      },
+      setRedoEmpty(state) {
+        state.redoStack = []
+      },
+      Undo(state, action) {
+        state.undoStack.pop();
+        state.redoStack.push(action.payload);
+      },
+      Redo(state, action) {
+        state.redoStack.pop();
+        state.undoStack.push(action.payload);
+      },
     },
-    setColor(state, action) {
-      state.color = action.payload;
-    },
-    setSize(state, action) {
-      state.size = action.payload;
-    },
-    pushToUndo(state, action) {
-      state.undoStack.push(action.payload);
-    },
-    pushToRedo(state, action) {
-      state.redoStack.push(action.payload);
-    },
-    Undo(state, action) {
-      state.undoStack.pop();
-      state.redoStack.push(action.payload);
-    },
-    Redo(state, action) {
-      state.redoStack.pop();
-      state.undoStack.push(action.payload);
-    },
-  },
-});
+})
+
 
 export const {
-  setTool,
-  setColor,
-  setSize,
   Undo,
   Redo,
   pushToUndo,
-  pushToRedo
+  pushToRedo,
+  setRedoEmpty,
+  setUndoEmpty
 } = canvasSlice.actions;
+
 export default canvasSlice.reducer;

@@ -6,5 +6,5 @@ export class CreateDrawingDto {
     @IsNotEmpty()
     title: string
 
-    imageData: string
+    imageData: Express.Multer.File | null
 }

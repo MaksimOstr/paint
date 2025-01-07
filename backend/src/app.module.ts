@@ -26,6 +26,10 @@ import { DrawingModule } from './drawing/drawing.module';
       rootPath: join(__dirname, '..', 'uploads'),
       serveRoot: '/uploads'
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'drawuploads'),
+      serveRoot: '/drawuploads'
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -3,10 +3,10 @@
 import React from "react";
 import { debounce, TextField } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
-import { setColor } from "@/slices/canvas.slice";
+import { setColor } from "@/slices/tool.slice";
 
 export const ColorPicker = () => {
-  const { color } = useAppSelector((state) => state.canvas);
+  const { color } = useAppSelector((state) => state.tool);
   const dispatch = useAppDispatch();
   
   const handleColorChange = debounce((value) => {

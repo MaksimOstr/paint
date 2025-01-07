@@ -1,4 +1,4 @@
 export const tabs = [
     { label: "Settings", path: "/main/profile/settings" },
-    { label: "My Photos", path: "/main/profile/savedArts" },
+    { label: "My drawings", path: "/main/profile/savedArts" },
   ];
