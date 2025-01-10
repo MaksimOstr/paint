@@ -40,6 +40,11 @@ model RefreshToken {
   @@unique([userId, userAgent, userIp])
 }
 
+model SocketsRoom {
+  creatorId String
+  roomId String @id @unique @default(uuid())
+}
+
 enum Role {
   ADMIN
   USER

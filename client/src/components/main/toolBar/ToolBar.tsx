@@ -68,7 +68,7 @@ export const ToolBar = () => {
   };
 
   const getButtonStyle = (toolId: string) => ({
-    color: toolName === toolId ? "red" : "",
+    color: toolName === toolId ? "#ff7043" : "",
   });
 
   return (
@@ -105,6 +105,8 @@ export const ToolBar = () => {
                 <ColorPicker />
                 <Slider
                   value={size}
+                  valueLabelDisplay="auto"
+                  defaultValue={5}
                   min={1}
                   max={50}
                   step={1}

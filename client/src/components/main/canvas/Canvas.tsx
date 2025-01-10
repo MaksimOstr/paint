@@ -14,6 +14,10 @@ import { loadCanvas, saveCanvas } from "./functions/canvasFunctions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { API_URL } from "../../../../shared/constants";
 import { pushToUndo, setRedoEmpty, setUndoEmpty } from "@/slices/canvas.slice";
+import { socket } from "../../../../shared/utils/socket.utils";
+import { toast } from "react-toastify";
+import { setRoomId } from "@/slices/lobby.slice";
+
 
 export const Canvas = () => {
   const urlParams = useSearchParams();
@@ -23,6 +27,7 @@ export const Canvas = () => {
   const { toolName, size, color } = useAppSelector((state) => state.tool);
   const { setValue } = useContext(CanvasContext);
   const { push } = useRouter()
+  const roomId = useAppSelector(state => state.lobby.roomId)
 
   useEffect(() => {
     setValue(canvasRef.current);
@@ -32,7 +37,26 @@ export const Canvas = () => {
     return () => {
       window.removeEventListener("beforeunload", () => saveCanvas(canvasRef));
     };
-  }, []);
+  }, [setValue]);
+
+  useEffect(() => {
+    if(roomId) {
+      console.log(roomId)
+      socket.connect();
+      socket.emit('join room', roomId)
+
+    socket.on('joinSuccess', (res) => {
+      toast.success(res.message)
+    })
+
+    socket.on('joinError', (res) => {
+      localStorage.removeItem('roomId')
+      dispatch(setRoomId(null))
+      toast.error(res.message)
+      socket.disconnect()
+    })
+    }
+  }, [dispatch, roomId])
 
   useEffect(() => {
     console.log('test')

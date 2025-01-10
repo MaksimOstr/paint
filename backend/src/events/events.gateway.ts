@@ -1,4 +1,5 @@
 import {
+  ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -8,33 +9,49 @@ import {
   WebSocketServer,
   WsResponse,
 } from '@nestjs/websockets'
-import { from, map, Observable } from 'rxjs'
-import { Server } from 'socket.io'
+import { Server, Socket } from 'socket.io'
+import { PrismaService } from 'src/prisma/prisma.service'
 
 @WebSocketGateway({
-
+  cors: {
+    origin: 'http://localhost:3000',
+    credentials: true,
+  },
 })
-export class EventsGateway implements OnGatewayInit, OnGatewayDisconnect, OnGatewayConnection {
+export class EventsGateway
+  implements OnGatewayInit, OnGatewayDisconnect, OnGatewayConnection
+{
+  constructor(private prismaService: PrismaService) {}
+
   @WebSocketServer()
   server: Server
 
-  afterInit(server: any) {
-      
-  }
+  afterInit(server: any) {}
 
-  handleConnection(client: any, ...args: any[]) {
-      console.log('connected')
-  }
+  handleConnection(client: Socket, ...args: any[]) {}
 
   handleDisconnect(client: any) {
-      console.log('qeqeqeq')
+    console.log('disconnect')
   }
 
-  @SubscribeMessage('events')
-  onEvent(@MessageBody() data: unknown): Observable<WsResponse<number>> {
-    const event = 'events'
-    const response = [1, 2, 3]
-    
-    return from(response).pipe(map((data) => ({ event, data })))
+  @SubscribeMessage('join room')
+  async joinRoom(
+    @MessageBody() data: string,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const isValidRoom = await this.prismaService.socketsRoom.findFirst({
+      where: { roomId: data },
+    })
+    if (!isValidRoom) {
+      client.emit('joinError', {
+        message: 'Room does not exist or is invalid.',
+      })
+    } else {
+      client.join(data)
+      client.emit('joinSuccess', {
+        room: data,
+        message: 'Successfully joined the room!',
+      })
+    }
   }
 }
