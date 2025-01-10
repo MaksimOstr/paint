@@ -18,7 +18,7 @@ export const LobbyInfoBar = () => {
     localStorage.removeItem("roomId");
     dispatch(setRoomId(null));
     socket.disconnect()
-    toast.success('You disconnected from server!')
+    toast.success('You disconnected from room!')
   };
 
   return (

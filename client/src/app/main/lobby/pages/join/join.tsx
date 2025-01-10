@@ -24,7 +24,6 @@ export const Join = ({
 
   const handleJoin = () => {
     dispatch(setRoomId(value))
-    localStorage.setItem('roomId', value)
     setValue('')
     setPage('')
     push('/main')

@@ -33,7 +33,6 @@ export const Lobby = () => {
     .unwrap()
     .then((res) => {
       dispatch(setRoomId(res.roomId))
-      localStorage.setItem('roomId', res.roomId)
       push('/main')
     })
   }

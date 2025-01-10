@@ -26,9 +26,15 @@ export const Page = () => {
   const roomId = useAppSelector(state => state.lobby.roomId)
 
   useEffect(() => {
-    if(localStorage.getItem('roomId')) {
-      dispatch(setRoomId(localStorage.getItem('roomId')))
+    const localRoomId = localStorage.getItem('roomId')
+
+    if(localRoomId) {
+      dispatch(setRoomId(localRoomId))
     }
+    if(!localRoomId && roomId) {
+      localStorage.setItem('roomId', roomId)
+    }
+    
     setIsLoading(false)
   }, [dispatch, roomId])
 

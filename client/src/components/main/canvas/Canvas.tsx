@@ -18,7 +18,6 @@ import { socket } from "../../../../shared/utils/socket.utils";
 import { toast } from "react-toastify";
 import { setRoomId } from "@/slices/lobby.slice";
 
-
 export const Canvas = () => {
   const urlParams = useSearchParams();
   const image = urlParams.get("image");
@@ -26,12 +25,12 @@ export const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const { toolName, size, color } = useAppSelector((state) => state.tool);
   const { setValue } = useContext(CanvasContext);
-  const { push } = useRouter()
-  const roomId = useAppSelector(state => state.lobby.roomId)
+  const { push } = useRouter();
+  const roomId = useAppSelector((state) => state.lobby.roomId);
 
   useEffect(() => {
     setValue(canvasRef.current);
-    loadCanvas(canvasRef, localStorage.getItem('canvasUrl')!);
+    loadCanvas(canvasRef, localStorage.getItem("canvasUrl")!);
     window.addEventListener("beforeunload", () => saveCanvas(canvasRef));
 
     return () => {
@@ -40,38 +39,37 @@ export const Canvas = () => {
   }, [setValue]);
 
   useEffect(() => {
-    if(roomId) {
-      console.log(roomId)
+    if (roomId) {
       socket.connect();
-      socket.emit('join room', roomId)
+      socket.emit("join room", roomId);
 
-    socket.on('joinSuccess', (res) => {
-      toast.success(res.message)
-    })
+      socket.on("joinSuccess", (res) => {
+        toast.success(res.message);
+      });
 
-    socket.on('joinError', (res) => {
-      localStorage.removeItem('roomId')
-      dispatch(setRoomId(null))
-      toast.error(res.message)
-      socket.disconnect()
-    })
+      socket.on("joinError", (res) => {
+        localStorage.removeItem("roomId");
+        dispatch(setRoomId(null));
+        toast.error(res.message);
+        socket.disconnect();
+      });
     }
-  }, [dispatch, roomId])
+  }, [dispatch, roomId]);
 
   useEffect(() => {
-    console.log('test')
+    console.log("test");
     if (image && canvasRef.current) {
-      dispatch(setRedoEmpty())
-      dispatch(setUndoEmpty())
+      dispatch(setRedoEmpty());
+      dispatch(setUndoEmpty());
       const path = `${API_URL}${image}`;
-      loadCanvas(canvasRef, path)
-      localStorage.setItem('canvasUrl', path)
-      push('/main')
+      loadCanvas(canvasRef, path);
+      localStorage.setItem("canvasUrl", path);
+      push("/main");
     }
   }, [dispatch, image, push]);
 
   useEffect(() => {
-    console.log('test')
+    console.log("test");
     let tool;
     if (canvasRef.current) {
       switch (toolName) {
