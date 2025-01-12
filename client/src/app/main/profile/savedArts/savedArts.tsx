@@ -18,17 +18,23 @@ import Grid from "@mui/material/Grid2";
 import { API_URL } from "../../../../../shared/constants";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { useAppDispatch } from "@/hooks/rtkHooks";
+import { setRedoEmpty, setUndoEmpty } from "@/slices/canvas.slice";
 
 export const SavedArts = () => {
-
   const { data, isLoading } = useGetDrawingsQuery();
   const [deleteDrawing] = useDeleteDrawingMutation();
-  const { push } = useRouter()
+  const { push } = useRouter();
+  const dispatch = useAppDispatch();
 
   const selectDrawing = (url: string, title: string) => {
-    toast.success(`You selected ${title}`)
-    push(`/main/?image=${url}`)
-  }
+    toast.success(`You selected ${title}`);
+    dispatch(setRedoEmpty());
+    dispatch(setUndoEmpty());
+    const path = `${API_URL}${url}`;
+    localStorage.setItem("canvasUrl", path);
+    push(`/main`);
+  };
 
   return (
     <Box height="100%" p={2}>
@@ -54,15 +60,22 @@ export const SavedArts = () => {
                     src={`${API_URL}${drawing.imageData}`}
                   ></Box>
                   <Stack spacing={1} direction="row">
-                  <Button
-                    color='error'
-                    onClick={() => deleteDrawing({ id: drawing.id })}
-                    variant="outlined"
-                  >
-                    Delete
-                  </Button>
-                  <Button onClick={() => selectDrawing(drawing.imageData, drawing.title)} variant="outlined">Select</Button>
-                </Stack>
+                    <Button
+                      color="error"
+                      onClick={() => deleteDrawing({ id: drawing.id })}
+                      variant="outlined"
+                    >
+                      Delete
+                    </Button>
+                    <Button
+                      onClick={() =>
+                        selectDrawing(drawing.imageData, drawing.title)
+                      }
+                      variant="outlined"
+                    >
+                      Select
+                    </Button>
+                  </Stack>
                 </Stack>
               </Paper>
             </Grid>

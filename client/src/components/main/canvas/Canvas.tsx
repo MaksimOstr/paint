@@ -5,29 +5,24 @@ import styles from "./canvas.module.scss";
 import { Box } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
 import { Brush } from "./tools/Brush";
-import { Eraser } from "./tools/Eraser";
-import { Rect } from "./tools/Rect";
-import { Square } from "./tools/Square";
-import Line from "./tools/Line";
 import { CanvasContext } from "@/app/main/page";
-import { loadCanvas, saveCanvas } from "./functions/canvasFunctions";
-import { useRouter, useSearchParams } from "next/navigation";
-import { API_URL } from "../../../../shared/constants";
-import { pushToUndo, setRedoEmpty, setUndoEmpty } from "@/slices/canvas.slice";
+import { loadCanvas, saveCanvas, selectToolParam } from "./functions/canvasFunctions";
+import { pushToUndo } from "@/slices/canvas.slice";
 import { socket } from "../../../../shared/utils/socket.utils";
 import { toast } from "react-toastify";
 import { setRoomId } from "@/slices/lobby.slice";
+import { IWebSocketDrawingRes } from "@/types/drawing.types";
+import { useGetUserProfileQuery } from "@/services/auth.service";
 
 export const Canvas = () => {
-  const urlParams = useSearchParams();
-  const image = urlParams.get("image");
   const dispatch = useAppDispatch();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const { toolName, size, color } = useAppSelector((state) => state.tool);
   const { setValue } = useContext(CanvasContext);
-  const { push } = useRouter();
   const roomId = useAppSelector((state) => state.lobby.roomId);
+  const { data } = useGetUserProfileQuery()
 
+  //Saving and loading canvasState
   useEffect(() => {
     setValue(canvasRef.current);
     loadCanvas(canvasRef, localStorage.getItem("canvasUrl")!);
@@ -39,13 +34,25 @@ export const Canvas = () => {
   }, [setValue]);
 
   useEffect(() => {
-    if (roomId) {
+    if (roomId && data?.username) {
       socket.connect();
-      socket.emit("join room", roomId);
+      socket.emit("join room", {roomId, username: data.username});
 
       socket.on("joinSuccess", (res) => {
         toast.success(res.message);
       });
+
+      socket.on('userJoining', (res) => {
+        toast.info(`${res.username} had joined to the room!`)
+      })
+
+      socket.on('userLeaving', (res) => {
+        toast.info(`${res.username} left the room.`)
+      })
+
+      socket.on('disconnect', () => {
+        toast.success('You disconnected from the room!')
+      })
 
       socket.on("joinError", (res) => {
         localStorage.removeItem("roomId");
@@ -53,53 +60,46 @@ export const Canvas = () => {
         toast.error(res.message);
         socket.disconnect();
       });
-    }
-  }, [dispatch, roomId]);
 
-  useEffect(() => {
-    console.log("test");
-    if (image && canvasRef.current) {
-      dispatch(setRedoEmpty());
-      dispatch(setUndoEmpty());
-      const path = `${API_URL}${image}`;
-      loadCanvas(canvasRef, path);
-      localStorage.setItem("canvasUrl", path);
-      push("/main");
+      socket.on("drawing", (res) => {
+        drawHandler(res);
+      });
     }
-  }, [dispatch, image, push]);
 
+    return () => {
+      socket.disconnect();
+      socket.removeAllListeners();
+    };
+  }, [data?.username, dispatch, roomId]);
+
+//Setting tool for painting
   useEffect(() => {
-    console.log("test");
-    let tool;
+    selectToolParam(canvasRef, toolName, size, color, roomId)
+  }, [dispatch, size, toolName, color, roomId]);
+
+  const drawHandler = (msg: IWebSocketDrawingRes) => {
+    const figure = msg.figure;
     if (canvasRef.current) {
-      switch (toolName) {
-        case "brush":
-          tool = new Brush(canvasRef.current);
-          break;
-        case "eraser":
-          tool = new Eraser(canvasRef.current);
-          break;
-        case "rect":
-          tool = new Rect(canvasRef.current);
-          break;
-        case "square":
-          tool = new Square(canvasRef.current);
-          break;
-        case "line":
-          tool = new Line(canvasRef.current);
-          break;
+      const ctx = canvasRef.current.getContext("2d");
+      if (ctx) {
+        switch (figure.type) {
+          case "brush":
+            Brush.staticDraw(ctx, figure.x, figure.y);
+            break;
+          case "clear":
+            ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+            break;
+          case "finish":
+            console.log("finish");
+            ctx.beginPath();
+            break;
+        }
       }
     }
-
-    if (tool && tool.ctx) {
-      tool.lineSize = size;
-      tool.fillColor = color;
-    }
-  }, [dispatch, size, toolName, color]);
+  };
 
   const mouseDownHandler = () => {
     dispatch(pushToUndo(canvasRef.current?.toDataURL()));
-    localStorage.setItem("canvasUrl", canvasRef.current!.toDataURL());
   };
 
   return (
@@ -113,7 +113,6 @@ export const Canvas = () => {
     >
       <canvas
         onMouseDown={() => mouseDownHandler()}
-        onMouseUp={() => saveCanvas(canvasRef)}
         ref={canvasRef}
         className={styles.canvas}
         width={1920}

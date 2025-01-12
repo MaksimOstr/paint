@@ -12,18 +12,28 @@ import { CanvasContext } from "@/app/main/page";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import { SaveButton } from "./components/saveButton";
 import { pushToUndo, Redo, Undo } from "@/slices/canvas.slice";
+import { socket } from "../../../../shared/utils/socket.utils";
 
 export const ToolBar = () => {
   const { toolName, size } = useAppSelector((state) => state.tool);
   const { redoStack, undoStack } = useAppSelector((state) => state.canvas)
   const dispatch = useAppDispatch();
   const { canvas } = useContext(CanvasContext);
+  const roomId = useAppSelector(state => state.lobby.roomId)
  
   const clearCanvas = () => {
     if (canvas) {
       dispatch(pushToUndo(canvas.toDataURL()));
       const ctx = canvas.getContext("2d");
       ctx?.clearRect(0, 0, canvas.width, canvas.height);
+      if(roomId) {
+        socket.emit('draw', {
+          roomId,
+          figure: {
+            type: 'clear'
+          }
+        })
+      }
     }
     localStorage.removeItem('canvasUrl')
   };
@@ -36,7 +46,6 @@ export const ToolBar = () => {
     if (canvas) {
       const ctx = canvas.getContext("2d")!;
       if (undoStack.length > 0) {
-        console.log(undoStack + 'testeste')
         const lastState = undoStack[undoStack.length - 1];
         dispatch(Undo(canvas.toDataURL()));
         const img = new Image();

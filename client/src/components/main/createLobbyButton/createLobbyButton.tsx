@@ -11,7 +11,7 @@ export const CreateLobbyButton = () => {
 
   return (
     <Tooltip title = 'Create or join to a lobby.'>
-        <IconButton onClick={() => push('/main/lobby')} color='secondary' size='large' sx={{ position: 'absolute', right: '30px', bottom: '30px' }}>
+        <IconButton onClick={() => push('/main/lobby')} color='secondary' size='large' sx={{ position: 'absolute', right: '40px', bottom: '40px' }}>
             <SettingsInputHdmiIcon sx={{ fontSize: '40px' }}/>
         </IconButton>
     </Tooltip>

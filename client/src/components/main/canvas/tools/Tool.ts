@@ -1,9 +1,11 @@
 export class Tool {
   canvas: HTMLCanvasElement
   ctx: CanvasRenderingContext2D
+  id: string | undefined
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement, id?: string) {
     this.canvas = canvas;
+    this.id = id
     this.ctx = canvas.getContext('2d')!
     this.destroyEvents()
   }

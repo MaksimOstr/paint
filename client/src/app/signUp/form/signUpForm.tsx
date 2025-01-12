@@ -35,9 +35,8 @@ export const Form: React.FC = () => {
     const { confirmPassword, ...userData } = data
     createUser(userData)
     .unwrap()
-    .then((res) => {
+    .then(() => {
       toast.success('New user was successfully registered!')
-      console.log(res)
       push('/auth')
     })
     .catch(err => {

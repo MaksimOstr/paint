@@ -7,10 +7,10 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsResponse,
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 import { PrismaService } from 'src/prisma/prisma.service'
+import { IDrawRequest, IUserJoinReq } from './types/drawEvent.types'
 
 @WebSocketGateway({
   cors: {
@@ -34,24 +34,46 @@ export class EventsGateway
     console.log('disconnect')
   }
 
+
   @SubscribeMessage('join room')
   async joinRoom(
-    @MessageBody() data: string,
+    @MessageBody() data: IUserJoinReq,
     @ConnectedSocket() client: Socket,
   ) {
+    const { roomId, username } = data
     const isValidRoom = await this.prismaService.socketsRoom.findFirst({
-      where: { roomId: data },
+      where: { roomId },
     })
     if (!isValidRoom) {
       client.emit('joinError', {
         message: 'Room does not exist or is invalid.',
       })
     } else {
-      client.join(data)
+      client.join(roomId)
       client.emit('joinSuccess', {
         room: data,
         message: 'Successfully joined the room!',
       })
+      client.broadcast.to(roomId).emit('userJoining', { username })
     }
   }
+
+  @SubscribeMessage('left room')
+  async leftRoom(
+    @MessageBody() data: IUserJoinReq,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const { roomId, username } = data 
+    client.broadcast.to(roomId).emit('userLeaving', { username })
+  }
+
+  @SubscribeMessage('draw')
+  async draw(
+    @MessageBody() data: IDrawRequest,
+    @ConnectedSocket() client: Socket,
+  ) {
+    client.broadcast.to(data.roomId).emit('drawing', { figure: data.figure });
+  }
+
+
 }
