@@ -2,9 +2,8 @@ import { socket } from "../../../../../shared/utils/socket.utils";
 import { Tool } from "./Tool";
 
 export class Brush extends Tool {
-  mouseDown = false;
 
-  constructor(canvas: HTMLCanvasElement, id?: string) {
+constructor(canvas: HTMLCanvasElement, id?: string) {
     super(canvas, id);
     this.listen();
   }
@@ -17,19 +16,15 @@ export class Brush extends Tool {
 
   mouseUpHandler() {
     this.mouseDown = false;
-    socket.emit('draw', {
-      roomId: this.id,
-      figure: {
-        type: 'finish'
-      }
-    })
-    this.ctx.beginPath()
+    socket.emit('finishDrawing', { roomId: this.id })
   }
 
   mouseDownHandler(e: MouseEvent) {
+    this.ctx?.beginPath();
+    this.ctx.lineWidth = this.localBrushWidth
+    this.ctx.strokeStyle = this.localBrushColor
     const target = e.target as HTMLElement;
     this.mouseDown = true;
-    this.ctx?.beginPath();
     this.ctx?.moveTo(e.pageX - target.offsetLeft, e.pageY - target.offsetTop);
   }
 
@@ -42,7 +37,9 @@ export class Brush extends Tool {
         figure: {
           type: 'brush',
           x: e.pageX - target.offsetLeft,
-          y: e.pageY - target.offsetTop
+          y: e.pageY - target.offsetTop,
+          lineWidth: this.ctx.lineWidth,
+          color: this.ctx.fillStyle
         }
       })
     }
@@ -53,7 +50,9 @@ export class Brush extends Tool {
     this.ctx.stroke();
   }
 
-  static staticDraw(ctx: CanvasRenderingContext2D, x: number, y: number) {
+  static staticDraw(ctx: CanvasRenderingContext2D, x: number, y: number, lineWidth: number, color: string) {
+    ctx.strokeStyle = color
+    ctx.lineWidth = lineWidth
     ctx.lineTo(x, y);
     ctx.stroke();
   }

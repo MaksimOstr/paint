@@ -9,20 +9,19 @@ import {
   Button,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
-import { setRoomId } from "@/slices/lobby.slice";
+import { useAppSelector } from "@/hooks/rtkHooks";
 import { socket } from "../../../../shared/utils/socket.utils";
 import { toast } from "react-toastify";
 import { useGetUserProfileQuery } from "@/services/auth.service";
+import GroupsIcon from '@mui/icons-material/Groups';
 
 export const LobbyInfoBar = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
-  const dispatch = useAppDispatch();
-  const roomId = useAppSelector((state) => state.lobby.roomId);
-  const { data } = useGetUserProfileQuery()
 
+  const { roomId, connectedUsers } = useAppSelector((state) => state.lobby);
+  const { data } = useGetUserProfileQuery();
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -32,16 +31,18 @@ export const LobbyInfoBar = () => {
   };
 
   const handleLeave = () => {
-    socket.emit('left room', { roomId, username: data?.username })
-    localStorage.removeItem("roomId");
-    dispatch(setRoomId(null));
-    socket.disconnect();
+    socket.emit("left room", {
+      roomId,
+      username: data?.username,
+      id: data?.id,
+    });
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(roomId!)
-    .then(() => toast.success('Lobby code successfully copied!'))
-  }
+    navigator.clipboard
+      .writeText(roomId!)
+      .then(() => toast.success("Lobby code successfully copied!"));
+  };
 
   const open = Boolean(anchorEl);
   const id = open ? "lobby-popover" : undefined;
@@ -63,15 +64,32 @@ export const LobbyInfoBar = () => {
           horizontal: "center",
         }}
       >
-        <Stack>
+        <Stack p={2} spacing={2}>
           <Typography variant="h5" textAlign="center">
             Lobby info
           </Typography>
-          <Stack direction='row' display='flex' alignItems='center'>
+          <Stack spacing={1} direction="row" display="flex" alignItems="center">
             <Typography>Room id:</Typography>
-            <Button onClick={handleCopy}>copy</Button>
+            <Button size="small" variant="outlined" onClick={handleCopy}>
+              copy
+            </Button>
           </Stack>
-          <Button onClick={handleLeave}>Leave</Button>
+          <Stack spacing={1}>
+            <Typography variant="h6">Lobby users:</Typography>
+            <Stack spacing={1}>
+              {connectedUsers.map((user, index) => (
+                <Box key={index}>
+                  <Stack alignItems='center' spacing={5} direction='row'>
+                    <Typography>{user.username}</Typography>
+                    {user.isCreator ? <GroupsIcon fontSize="small"/> : ''}
+                  </Stack>
+                </Box>
+              ))}
+            </Stack>
+          </Stack>
+          <Button color="error" onClick={handleLeave}>
+            Leave
+          </Button>
         </Stack>
       </Popover>
     </Box>

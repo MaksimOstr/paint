@@ -1,13 +1,16 @@
+import { socket } from "../../../../../shared/utils/socket.utils";
 import { Tool } from "./Tool";
 
 export class Square extends Tool {
-  private isDrawing: boolean = false;
   private startX: number = 0;
   private startY: number = 0;
   private savedCanvas: string = "";
+  adjustedX: number = 0
+  adjustedY: number = 0
+  sideLength: number = 0
 
-  constructor(canvas: HTMLCanvasElement) {
-    super(canvas);
+  constructor(canvas: HTMLCanvasElement, id?: string) {
+    super(canvas, id);
     this.listen();
   }
 
@@ -17,35 +20,47 @@ export class Square extends Tool {
     this.canvas.onmouseup = this.onMouseUp.bind(this);
   }
 
-  private onMouseDown(event: MouseEvent) {
+  private onMouseDown(e: MouseEvent) {
+    this.ctx.lineWidth = 1;
+    this.ctx.beginPath()
     const rect = this.canvas.getBoundingClientRect();
-    this.startX = event.clientX - rect.left;
-    this.startY = event.clientY - rect.top;
-    this.isDrawing = true;
+    this.startX = e.clientX - rect.left;
+    this.startY = e.clientY - rect.top;
+    this.mouseDown = true;
     this.savedCanvas = this.canvas.toDataURL();
   }
 
-  private onMouseMove(event: MouseEvent) {
-    if (!this.isDrawing) return;
-
+  private onMouseMove(e: MouseEvent) {
+    if (!this.mouseDown) return;
     const rect = this.canvas.getBoundingClientRect();
-    const currentX = event.clientX - rect.left;
-    const currentY = event.clientY - rect.top;
+    const currentX = e.clientX - rect.left;
+    const currentY = e.clientY - rect.top;
 
-    const sideLength = Math.max(
+    this.sideLength = Math.max(
       Math.abs(currentX - this.startX),
       Math.abs(currentY - this.startY)
     );
 
-    const adjustedX = currentX < this.startX ? this.startX - sideLength : this.startX;
-    const adjustedY = currentY < this.startY ? this.startY - sideLength : this.startY;
+    this.adjustedX =
+      currentX < this.startX ? this.startX - this.sideLength : this.startX;
+    this.adjustedY =
+      currentY < this.startY ? this.startY - this.sideLength : this.startY;
 
-    this.drawPreview(adjustedX, adjustedY, sideLength);
+    this.drawPreview(this.adjustedX, this.adjustedY, this.sideLength);
   }
 
   private onMouseUp() {
-    if (!this.isDrawing) return;
-    this.isDrawing = false;
+    this.mouseDown = false;
+    socket.emit("draw", {
+      roomId: this.id,
+      figure: {
+        type: "square",
+        x: this.adjustedX,
+        y: this.adjustedY,
+        sideLength: this.sideLength
+      },
+    });
+    socket.emit('finishDrawing', { roomId: this.id })
   }
 
   private drawPreview(x: number, y: number, sideLength: number) {
@@ -55,17 +70,27 @@ export class Square extends Tool {
     image.onload = () => {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.ctx.drawImage(image, 0, 0, this.canvas.width, this.canvas.height);
-      this.draw(x, y, sideLength, true);
+      this.draw(x, y, sideLength);
     };
   }
 
-  public draw(x: number, y: number, sideLength: number, fill: boolean = true) {
+  public draw(x: number, y: number, sideLength: number) {
     this.ctx.beginPath();
     this.ctx.rect(x, y, sideLength, sideLength);
-    if (fill) {
-      this.ctx.fill();
-    }
+    this.ctx.fill();
     this.ctx.stroke();
     this.ctx.closePath();
+  }
+
+  static staticDraw(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    sideLength: number
+  ) {
+    ctx.beginPath();
+    ctx.rect(x, y, sideLength, sideLength);
+    ctx.fill();
+    ctx.stroke();
   }
 }

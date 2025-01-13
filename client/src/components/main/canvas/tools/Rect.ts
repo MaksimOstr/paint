@@ -1,7 +1,6 @@
 import { Tool } from "./Tool";
 
 export class Rect extends Tool {
-  mouseDown = false;
   startX: number = 0;
   startY: number = 0;
   saved: string = ''
@@ -22,6 +21,7 @@ export class Rect extends Tool {
   }
 
   mouseDownHandler(e: MouseEvent) {
+    this.ctx.lineWidth = 1
     const target = e.target as HTMLElement;
     this.mouseDown = true;
     this.ctx?.beginPath();

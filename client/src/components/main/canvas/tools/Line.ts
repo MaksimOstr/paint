@@ -1,7 +1,6 @@
 import { Tool } from "./Tool";
 
 export default class Line extends Tool {
-  mouseDown = false;
   currentX: number = 0;
   currentY: number = 0;
   saved: string = "";
@@ -18,8 +17,8 @@ export default class Line extends Tool {
   }
 
   mouseDownHandler(e: MouseEvent) {
+    this.ctx.lineWidth = 1
     const target = e.target as HTMLElement;
-
     this.mouseDown = true;
     this.currentX = e.pageX - target.offsetLeft;
     this.currentY = e.pageY - target.offsetTop;

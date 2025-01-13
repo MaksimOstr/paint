@@ -2,6 +2,9 @@ export class Tool {
   canvas: HTMLCanvasElement
   ctx: CanvasRenderingContext2D
   id: string | undefined
+  mouseDown = false
+  localBrushWidth = 0
+  localBrushColor = ''
 
   constructor(canvas: HTMLCanvasElement, id?: string) {
     this.canvas = canvas;
@@ -14,6 +17,7 @@ export class Tool {
   set lineSize(size: number) {
     if(this.ctx) {
       this.ctx.lineWidth = size 
+      this.localBrushWidth = size
     }
   }
 
@@ -21,6 +25,7 @@ export class Tool {
     if(this.ctx) {
       this.ctx.strokeStyle = color
       this.ctx.fillStyle = color
+      this.localBrushColor= color
     }
   }
 

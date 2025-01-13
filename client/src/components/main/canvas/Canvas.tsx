@@ -10,9 +10,12 @@ import { loadCanvas, saveCanvas, selectToolParam } from "./functions/canvasFunct
 import { pushToUndo } from "@/slices/canvas.slice";
 import { socket } from "../../../../shared/utils/socket.utils";
 import { toast } from "react-toastify";
-import { setRoomId } from "@/slices/lobby.slice";
+import { setLobbyUsers, setRoomId } from "@/slices/lobby.slice";
 import { IWebSocketDrawingRes } from "@/types/drawing.types";
 import { useGetUserProfileQuery } from "@/services/auth.service";
+import { Square } from "./tools/Square";
+import { setTool } from "@/slices/tool.slice";
+
 
 export const Canvas = () => {
   const dispatch = useAppDispatch();
@@ -34,10 +37,11 @@ export const Canvas = () => {
   }, [setValue]);
 
   useEffect(() => {
+    const ctx = canvasRef.current!.getContext("2d");
     if (roomId && data?.username) {
       socket.connect();
-      socket.emit("join room", {roomId, username: data.username});
-
+      socket.emit("join room", {roomId, username: data.username, id: data.id});
+      dispatch(setTool('brush'))
       socket.on("joinSuccess", (res) => {
         toast.success(res.message);
       });
@@ -52,8 +56,14 @@ export const Canvas = () => {
 
       socket.on('disconnect', () => {
         toast.success('You disconnected from the room!')
+        localStorage.removeItem("roomId");
+        dispatch(setRoomId(null));
       })
 
+      socket.on('roomClosing', (res) => {
+        toast.info(res.message)
+      })
+      
       socket.on("joinError", (res) => {
         localStorage.removeItem("roomId");
         dispatch(setRoomId(null));
@@ -61,9 +71,18 @@ export const Canvas = () => {
         socket.disconnect();
       });
 
+      socket.on('updateUserList', (res) => {
+        console.log(res)
+        dispatch(setLobbyUsers(res))
+      })
+
       socket.on("drawing", (res) => {
         drawHandler(res);
       });
+
+      socket.on('finishDraw', () => {
+        ctx!.beginPath()
+      })
     }
 
     return () => {
@@ -84,14 +103,13 @@ export const Canvas = () => {
       if (ctx) {
         switch (figure.type) {
           case "brush":
-            Brush.staticDraw(ctx, figure.x, figure.y);
+            Brush.staticDraw(ctx, figure.x, figure.y, figure.lineWidth, figure.color);
             break;
+          case "square":
+            Square.staticDraw(ctx, figure.x, figure.y, figure.sideLength!)
+            break
           case "clear":
             ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-            break;
-          case "finish":
-            console.log("finish");
-            ctx.beginPath();
             break;
         }
       }

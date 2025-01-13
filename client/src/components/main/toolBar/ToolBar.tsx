@@ -16,26 +16,26 @@ import { socket } from "../../../../shared/utils/socket.utils";
 
 export const ToolBar = () => {
   const { toolName, size } = useAppSelector((state) => state.tool);
-  const { redoStack, undoStack } = useAppSelector((state) => state.canvas)
+  const { redoStack, undoStack } = useAppSelector((state) => state.canvas);
   const dispatch = useAppDispatch();
   const { canvas } = useContext(CanvasContext);
-  const roomId = useAppSelector(state => state.lobby.roomId)
- 
+  const roomId = useAppSelector((state) => state.lobby.roomId);
+
   const clearCanvas = () => {
     if (canvas) {
       dispatch(pushToUndo(canvas.toDataURL()));
       const ctx = canvas.getContext("2d");
       ctx?.clearRect(0, 0, canvas.width, canvas.height);
-      if(roomId) {
-        socket.emit('draw', {
+      if (roomId) {
+        socket.emit("draw", {
           roomId,
           figure: {
-            type: 'clear'
-          }
-        })
+            type: "clear",
+          },
+        });
       }
     }
-    localStorage.removeItem('canvasUrl')
+    localStorage.removeItem("canvasUrl");
   };
 
   const handleSettingTool = (toolId: string) => {
@@ -54,7 +54,7 @@ export const ToolBar = () => {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         };
-        localStorage.setItem('canvasUrl', lastState)
+        localStorage.setItem("canvasUrl", lastState);
       }
     }
   };
@@ -71,7 +71,7 @@ export const ToolBar = () => {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         };
-        localStorage.setItem('canvasUrl', lastState)
+        localStorage.setItem("canvasUrl", lastState);
       }
     }
   };
@@ -151,22 +151,28 @@ export const ToolBar = () => {
             justifyContent="center"
             alignItems="center"
           >
-            <Tooltip title="Undo">
-              <IconButton onClick={() => undo()} size="small">
-                <UndoIcon fontSize="large" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip onClick={() => redo()} title="Redo">
-              <IconButton size="small">
-                <RedoIcon fontSize="large" />
-              </IconButton>
-            </Tooltip>
+            {roomId ? (
+              ""
+            ) : (
+              <>
+                <Tooltip title="Undo">
+                  <IconButton onClick={() => undo()} size="small">
+                    <UndoIcon fontSize="large" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip onClick={() => redo()} title="Redo">
+                  <IconButton size="small">
+                    <RedoIcon fontSize="large" />
+                  </IconButton>
+                </Tooltip>
+              </>
+            )}
             <Tooltip sx={{ ml: 1 }} title="Clear canvas">
               <IconButton onClick={() => clearCanvas()}>
                 <DeleteOutlineOutlinedIcon fontSize="large" />
               </IconButton>
             </Tooltip>
-            <SaveButton canvas={canvas!}/>
+            <SaveButton canvas={canvas!} />
           </Stack>
         </Stack>
       </Paper>

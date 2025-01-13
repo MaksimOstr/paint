@@ -14,6 +14,9 @@ export interface IFigure {
     type: string
     x: number
     y: number
+    sideLength: number,
+    lineWidth: number,
+    color: string
 }
 
 export interface IWebSocketDrawingRes {

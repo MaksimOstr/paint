@@ -1,8 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+
+interface ILobbyUser {
+  username: string
+  isCreator: boolean
+}
+
 interface LobbyState {
   roomId: string | null;
-  connectedUsers: Array<string>
+  connectedUsers: Array<ILobbyUser>
 }
 
 const initialState: LobbyState  = {
@@ -16,9 +22,12 @@ export const lobbySlice = createSlice({
   reducers: {
     setRoomId(state, action) {
         state.roomId = action.payload
+    },
+    setLobbyUsers(state, action) {
+      state.connectedUsers = action.payload
     }
   },
 });
 
-export const { setRoomId } = lobbySlice.actions;
+export const { setRoomId, setLobbyUsers } = lobbySlice.actions;
 export default lobbySlice.reducer;
