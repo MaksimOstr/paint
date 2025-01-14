@@ -1,12 +1,15 @@
+import { socket } from "../../../../../shared/utils/socket.utils";
 import { Tool } from "./Tool";
 
 export default class Line extends Tool {
   currentX: number = 0;
   currentY: number = 0;
   saved: string = "";
+  endX: number | undefined
+  endY: number | undefined
 
-  constructor(canvas: HTMLCanvasElement) {
-    super(canvas);
+  constructor(canvas: HTMLCanvasElement, id: string) {
+    super(canvas, id);
     this.listen();
   }
 
@@ -17,9 +20,10 @@ export default class Line extends Tool {
   }
 
   mouseDownHandler(e: MouseEvent) {
-    this.ctx.lineWidth = 1
     const target = e.target as HTMLElement;
     this.mouseDown = true;
+    this.ctx.strokeStyle = this.localColor
+    this.ctx.lineWidth = this.localBrushWidth
     this.currentX = e.pageX - target.offsetLeft;
     this.currentY = e.pageY - target.offsetTop;
     this.ctx.beginPath();
@@ -29,13 +33,27 @@ export default class Line extends Tool {
 
   mouseUpHandler() {
     this.mouseDown = false;
+    socket.emit("draw", {
+          roomId: this.id,
+          figure: {
+            type: "line",
+            x: this.currentX,
+            y: this.currentY,
+            endX: this.endX,
+            endY: this.endY,
+            color: this.localColor,
+            lineWidth: this.localBrushWidth
+          },
+    });
   }
 
   mouseMoveHandler(e: MouseEvent) {
     const target = e.target as HTMLElement;
 
     if (this.mouseDown) {
-      this.draw(e.pageX - target.offsetLeft, e.pageY - target.offsetTop);
+      this.endX = e.pageX - target.offsetLeft
+      this.endY = e.pageY - target.offsetTop
+      this.draw(this.endX, this.endY);
     }
   }
 
@@ -50,5 +68,14 @@ export default class Line extends Tool {
       this.ctx.lineTo(x, y);
       this.ctx.stroke();
     }
+  }
+
+  static staticDraw(ctx: CanvasRenderingContext2D, endX: number, endY: number, currentX: number, currentY: number, color: string, lineWidth: number) {
+    ctx.lineWidth = lineWidth
+    ctx.strokeStyle = color
+    ctx.beginPath();
+    ctx.moveTo(currentX, currentY);
+    ctx.lineTo(endX, endY);
+    ctx.stroke();
   }
 }

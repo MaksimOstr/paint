@@ -3,7 +3,7 @@ import { Tool } from "./Tool";
 
 export class Brush extends Tool {
 
-constructor(canvas: HTMLCanvasElement, id?: string) {
+constructor(canvas: HTMLCanvasElement, id?: string ) {
     super(canvas, id);
     this.listen();
   }
@@ -22,7 +22,7 @@ constructor(canvas: HTMLCanvasElement, id?: string) {
   mouseDownHandler(e: MouseEvent) {
     this.ctx?.beginPath();
     this.ctx.lineWidth = this.localBrushWidth
-    this.ctx.strokeStyle = this.localBrushColor
+    this.ctx.strokeStyle = this.localColor
     const target = e.target as HTMLElement;
     this.mouseDown = true;
     this.ctx?.moveTo(e.pageX - target.offsetLeft, e.pageY - target.offsetTop);
@@ -38,8 +38,8 @@ constructor(canvas: HTMLCanvasElement, id?: string) {
           type: 'brush',
           x: e.pageX - target.offsetLeft,
           y: e.pageY - target.offsetTop,
-          lineWidth: this.ctx.lineWidth,
-          color: this.ctx.fillStyle
+          lineWidth: this.localBrushWidth,
+          color: this.localColor
         }
       })
     }

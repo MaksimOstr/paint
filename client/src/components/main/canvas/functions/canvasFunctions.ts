@@ -47,19 +47,19 @@ export const selectToolParam = (
         tool = new Brush(canvasRef.current, roomId!);
         break;
       case "eraser":
-        tool = new Eraser(canvasRef.current);
+        tool = new Eraser(canvasRef.current, roomId!);
         break;
       case "rect":
-        tool = new Rect(canvasRef.current);
+        tool = new Rect(canvasRef.current, roomId!);
         break;
       case "square":
         tool = new Square(canvasRef.current, roomId!);
         break;
       case "line":
-        tool = new Line(canvasRef.current);
+        tool = new Line(canvasRef.current, roomId!);
         break;
       case "circle":
-        tool = new Circle(canvasRef.current)
+        tool = new Circle(canvasRef.current, roomId!)
         break
     }
   }
@@ -69,3 +69,4 @@ export const selectToolParam = (
     tool.fillColor = color;
   }
 };
+

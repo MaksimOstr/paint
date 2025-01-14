@@ -12,7 +12,7 @@ import {
 import React, { useState } from "react";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useCreateRoomMutation } from "@/services/room.service";
+import { useCreateRoomMutation } from "@/services/lobby.service";
 import { useAppDispatch } from "@/hooks/rtkHooks";
 import { setRoomId } from "@/slices/lobby.slice";
 import { Join } from "./pages/join/join";

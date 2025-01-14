@@ -12,11 +12,12 @@ import { Server, Socket } from 'socket.io'
 import { PrismaService } from 'src/prisma/prisma.service'
 import {
   IDrawRequest,
+  IFinishDrawing,
   ILobbyUser,
   IUserJoinReq,
   IUserLeaveReq,
 } from './types/drawEvent.types'
-import { EventService } from './event.service'
+import { LobbyService } from './lobby.service'
 
 @WebSocketGateway({
   cors: {
@@ -24,7 +25,7 @@ import { EventService } from './event.service'
     credentials: true,
   },
 })
-export class EventsGateway
+export class LobbyGateway
   implements OnGatewayInit, OnGatewayDisconnect, OnGatewayConnection
 {
 
@@ -32,7 +33,7 @@ export class EventsGateway
 
   constructor(
     private prismaService: PrismaService,
-    private eventService: EventService,
+    private eventService: LobbyService,
   ) {}
 
   @WebSocketServer()
@@ -105,23 +106,26 @@ export class EventsGateway
     @MessageBody() data: IDrawRequest,
     @ConnectedSocket() client: Socket,
   ) {
-    client.broadcast.to(data.roomId).emit('drawing', { figure: data.figure })
+    const { figure, roomId } = data
+    
+    client.broadcast.to(roomId).emit('drawing', { figure })
   }
 
   updateLobbyUsers(roomId: string) {
-
     const lobbyUsers = Object.values(this.users)
       .filter((user) => user.roomId === roomId)
       .map((user) => ({ username: user.username, isCreator: user.isCreator }))
-
+  
     this.server.to(roomId).emit('updateUserList', lobbyUsers)
   }
 
   @SubscribeMessage('finishDrawing')
   finishDraw(
-    @MessageBody('roomId') data: string,
+    @MessageBody() data: IFinishDrawing,
     @ConnectedSocket() client: Socket,
   ) {
-    this.server.to(data).emit('finishDraw', {})
+    const { roomId } = data
+
+    this.server.to(roomId).emit('finishDraw', {})
   }
 }

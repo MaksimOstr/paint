@@ -3,9 +3,7 @@ import {
   Body,
   Controller,
   Get,
-  HttpStatus,
   Param,
-  ParseFilePipeBuilder,
   Patch,
   Post,
   Req,
@@ -14,20 +12,22 @@ import {
   UseInterceptors,
 } from '@nestjs/common'
 import { UserService } from './user.service'
-import { User } from '@prisma/client'
-import { CreateUserDto } from 'src/shared/dto/create-user.dto'
+import { CreateUserDto } from 'src/user/dto/create-user.dto'
 import { UserWithoutPassword } from 'src/shared/types/userWithoutPassword'
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
-import { UpdateUserDto } from './dto/updateUser.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer';
 import { extname } from 'path'
+import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiParam, ApiResponse, PickType } from '@nestjs/swagger'
+import { CreateUserSwaggerResponse } from './swaggerTypeResponses/createUser.swagerResponse'
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
   @Post('create')
+  @ApiCreatedResponse({description: 'New user has been successfully created.', type: CreateUserSwaggerResponse})
+  @ApiBadRequestResponse({description: 'User with such a email already exists!'})
   async createUser(@Body() data: CreateUserDto): Promise<UserWithoutPassword> {
     const isUser = await this.userService.findUserByIdOrEmail(data.email)
 
@@ -39,6 +39,8 @@ export class UserController {
   }
 
   @Get(':idOrEmail')
+  @ApiParam({ name: 'idOrUsername', type: String, description: 'Find user by id or username.' })
+  
   async findUserByEmailOrId(
     @Param('idOrUsername') idOrEmail: string,
   ): Promise<UserWithoutPassword | null> {

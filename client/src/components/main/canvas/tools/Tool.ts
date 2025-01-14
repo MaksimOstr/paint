@@ -4,7 +4,7 @@ export class Tool {
   id: string | undefined
   mouseDown = false
   localBrushWidth = 0
-  localBrushColor = ''
+  localColor = ''
 
   constructor(canvas: HTMLCanvasElement, id?: string) {
     this.canvas = canvas;
@@ -25,7 +25,7 @@ export class Tool {
     if(this.ctx) {
       this.ctx.strokeStyle = color
       this.ctx.fillStyle = color
-      this.localBrushColor= color
+      this.localColor = color
     }
   }
 

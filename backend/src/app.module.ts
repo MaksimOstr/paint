@@ -8,7 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { RefreshTokenModule } from './refreshToken/refreshToken.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { CacheModule } from '@nestjs/cache-manager';
-import { EventsModule } from './events/event.module';
+import { LobbyModule } from './events/lobby.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { DrawingModule } from './drawing/drawing.module';
@@ -21,7 +21,7 @@ import { DrawingModule } from './drawing/drawing.module';
     UserModule,
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true }),
-    EventsModule,
+    LobbyModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
       serveRoot: '/uploads'
@@ -29,6 +29,10 @@ import { DrawingModule } from './drawing/drawing.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'drawuploads'),
       serveRoot: '/drawuploads'
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads/canvases'),
+      serveRoot: '/uploads/canvases',
     }),
   ],
   controllers: [AppController],

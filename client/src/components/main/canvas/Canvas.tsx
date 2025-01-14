@@ -15,6 +15,11 @@ import { IWebSocketDrawingRes } from "@/types/drawing.types";
 import { useGetUserProfileQuery } from "@/services/auth.service";
 import { Square } from "./tools/Square";
 import { setTool } from "@/slices/tool.slice";
+import { Eraser } from "./tools/Eraser";
+import { Rect } from "./tools/Rect";
+import Line from "./tools/Line";
+import Circle from "./tools/Circle";
+import { useLazyGetLobbyCanvasQuery, useSaveLobbyCanvasMutation } from "@/services/lobby.service";
 
 
 export const Canvas = () => {
@@ -24,6 +29,20 @@ export const Canvas = () => {
   const { setValue } = useContext(CanvasContext);
   const roomId = useAppSelector((state) => state.lobby.roomId);
   const { data } = useGetUserProfileQuery()
+  const [canvasToServer] = useSaveLobbyCanvasMutation()
+  const [getLobbyCanvas] = useLazyGetLobbyCanvasQuery()
+
+  const saveCanvasToServer = () => {
+   if(roomId) {
+    canvasRef.current!.toBlob(async (blob) => {
+      const formData = new FormData();
+      if(blob) {
+        formData.append("canvas", blob, `${roomId}.png`);
+      }
+      await canvasToServer({formData, roomId})
+    }, "image/png");
+   }
+  }
 
   //Saving and loading canvasState
   useEffect(() => {
@@ -42,8 +61,11 @@ export const Canvas = () => {
       socket.connect();
       socket.emit("join room", {roomId, username: data.username, id: data.id});
       dispatch(setTool('brush'))
-      socket.on("joinSuccess", (res) => {
+      socket.on("joinSuccess", async (res) => {
         toast.success(res.message);
+        await getLobbyCanvas(roomId)
+          .unwrap()
+          .then((res) => loadCanvas(canvasRef, res.filePath))
       });
 
       socket.on('userJoining', (res) => {
@@ -82,6 +104,8 @@ export const Canvas = () => {
 
       socket.on('finishDraw', () => {
         ctx!.beginPath()
+        ctx!.fillStyle = color
+        ctx!.strokeStyle = color
       })
     }
 
@@ -106,11 +130,27 @@ export const Canvas = () => {
             Brush.staticDraw(ctx, figure.x, figure.y, figure.lineWidth, figure.color);
             break;
           case "square":
-            Square.staticDraw(ctx, figure.x, figure.y, figure.sideLength!)
+            Square.staticDraw(ctx, figure.x, figure.y, figure.sideLength!, figure.color)
+            socket.emit('finishDrawing', { roomId })
             break
           case "clear":
             ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-            break;
+            break
+          case "eraser":
+            Eraser.staticDrawing(ctx, figure.x, figure.y, figure.lineWidth)
+          break
+          case "rect":
+            Rect.staticDraw(ctx, figure.x, figure.y, figure.width, figure.height, figure.color)
+            socket.emit('finishDrawing', { roomId })
+          break
+          case "line":
+            Line.staticDraw(ctx, figure.endX, figure.endY, figure.x, figure.y, figure.color, figure.lineWidth)
+            socket.emit('finishDrawing', { roomId })
+          break
+          case "circle":
+            Circle.staticDraw(ctx, figure.x, figure.y, figure.r, figure.color)
+            socket.emit('finishDrawing', { roomId })
+          break
         }
       }
     }
@@ -131,6 +171,7 @@ export const Canvas = () => {
     >
       <canvas
         onMouseDown={() => mouseDownHandler()}
+        onMouseUp={() => saveCanvasToServer()}
         ref={canvasRef}
         className={styles.canvas}
         width={1920}

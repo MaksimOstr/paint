@@ -22,6 +22,8 @@ export class Square extends Tool {
 
   private onMouseDown(e: MouseEvent) {
     this.ctx.lineWidth = 1;
+    this.ctx.strokeStyle = this.localColor
+    this.ctx.fillStyle = this.localColor
     this.ctx.beginPath()
     const rect = this.canvas.getBoundingClientRect();
     this.startX = e.clientX - rect.left;
@@ -57,10 +59,10 @@ export class Square extends Tool {
         type: "square",
         x: this.adjustedX,
         y: this.adjustedY,
-        sideLength: this.sideLength
+        sideLength: this.sideLength,
+        color: this.localColor
       },
     });
-    socket.emit('finishDrawing', { roomId: this.id })
   }
 
   private drawPreview(x: number, y: number, sideLength: number) {
@@ -86,8 +88,11 @@ export class Square extends Tool {
     ctx: CanvasRenderingContext2D,
     x: number,
     y: number,
-    sideLength: number
+    sideLength: number,
+    color: string
   ) {
+    ctx.fillStyle = color
+    ctx.strokeStyle = color
     ctx.beginPath();
     ctx.rect(x, y, sideLength, sideLength);
     ctx.fill();

@@ -3,8 +3,9 @@ export interface IDrawRequest {
     figure: {
         x: number,
         y: number,
-        type: string
-    }
+        type: string,
+        color: string
+    },
 }
 
 
@@ -22,4 +23,10 @@ export interface ILobbyUser {
     roomId: string
     username: string,
     isCreator: boolean
+}
+
+
+
+export interface IFinishDrawing {
+    roomId: string
 }

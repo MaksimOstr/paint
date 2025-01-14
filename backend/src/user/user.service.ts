@@ -1,7 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common'
 import { AuthMethod, User } from '@prisma/client'
 import { PrismaService } from 'src/prisma/prisma.service'
-import { CreateUserDto } from 'src/shared/dto/create-user.dto'
+import { CreateUserDto } from 'src/user/dto/create-user.dto'
 import { userSelect } from 'src/shared/selectors/user.select'
 import * as bcrypt from 'bcrypt'
 import { UserWithoutPassword } from 'src/shared/types/userWithoutPassword'

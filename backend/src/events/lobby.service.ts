@@ -4,7 +4,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 
 
 @Injectable()
-export class EventService {
+export class LobbyService {
     constructor(
         private prismaService: PrismaService
     ) {}

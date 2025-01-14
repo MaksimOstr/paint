@@ -1,12 +1,14 @@
+import { socket } from "../../../../../shared/utils/socket.utils";
 import { Tool } from "./Tool";
 
 export class Rect extends Tool {
   startX: number = 0;
   startY: number = 0;
   saved: string = ''
-
-  constructor(canvas: HTMLCanvasElement) {
-    super(canvas);
+  height: number | undefined
+  width: number | undefined
+  constructor(canvas: HTMLCanvasElement, id: string) {
+    super(canvas, id);
     this.listen();
   }
 
@@ -18,12 +20,25 @@ export class Rect extends Tool {
 
   mouseUpHandler() {
     this.mouseDown = false;
+    socket.emit('draw', {
+      roomId: this.id, 
+      figure: {
+        type: 'rect',
+        x: this.startX,
+        y: this.startY,
+        width: this.width,
+        height: this.height,
+        color: this.localColor
+      }
+    })
   }
 
   mouseDownHandler(e: MouseEvent) {
     this.ctx.lineWidth = 1
     const target = e.target as HTMLElement;
     this.mouseDown = true;
+    this.ctx.strokeStyle = this.localColor
+    this.ctx.fillStyle = this.localColor
     this.ctx?.beginPath();
     this.startX = e.pageX - target.offsetLeft;
     this.startY = e.pageY - target.offsetTop;
@@ -35,9 +50,9 @@ export class Rect extends Tool {
     if (this.mouseDown) {
       const currentX = e.pageX - target.offsetLeft;
       const currentY = e.pageY - target.offsetTop;
-      const width = currentX - this.startX;
-      const height = currentY - this.startY;
-      this.draw(this.startX, this.startY, width, height);
+      this.width = currentX - this.startX;
+      this.height = currentY - this.startY;
+      this.draw(this.startX, this.startY, this.width, this.height);
     }
   }
 
@@ -53,4 +68,14 @@ export class Rect extends Tool {
         this.ctx.stroke()
     }
   }
+
+  static staticDraw(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, color: string) {
+    ctx.fillStyle = color
+    ctx.strokeStyle = color
+    
+    ctx.beginPath()
+    ctx.rect(x, y, w, h)
+    ctx.fill()
+    ctx.stroke()
+}
 }
