@@ -13,7 +13,6 @@ export const userService = globalApi.injectEndpoints({
                 body,
             }),
             invalidatesTags: ['User'],
-            
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;

@@ -14,7 +14,6 @@ import { toast } from "react-toastify";
 export const Form: React.FC = () => {
   const { push } = useRouter();
   const [login] = useLoginMutation();
-
   const {
     control,
     handleSubmit,
@@ -81,7 +80,6 @@ export const Form: React.FC = () => {
             />
           )}
         />
-
         <Button size="large" fullWidth variant="outlined" type="submit">
           Sing In
         </Button>

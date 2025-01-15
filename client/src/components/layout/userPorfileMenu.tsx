@@ -17,19 +17,20 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { API_URL } from "../../../shared/constants";
 
-
 export default function UserProfileMenu() {
   const { push } = useRouter();
   const { data, isLoading } = useGetUserProfileQuery();
   const [logout] = useLogoutMutation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   const logoutUser = () => {
     logout()
       .unwrap()

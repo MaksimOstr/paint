@@ -11,10 +11,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 export const Form: React.FC = () => {
-
   const [createUser] = useCreateAccountMutation()
   const { push } = useRouter()
-  
   const {
     control,
     handleSubmit,
@@ -118,7 +116,6 @@ export const Form: React.FC = () => {
             )}
           />
         </Stack>
-
         <Button size="large" fullWidth variant="outlined" type="submit">
           Sing Up
         </Button>

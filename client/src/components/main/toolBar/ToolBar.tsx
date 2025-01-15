@@ -144,7 +144,6 @@ export const ToolBar = () => {
               ))}
             </Stack>
           </Stack>
-
           <Stack
             direction="row"
             display="flex"

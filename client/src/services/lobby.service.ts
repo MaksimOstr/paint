@@ -2,7 +2,7 @@ import { globalApi } from "@/api/globalApi";
 import { ISaveLobbyCanvas } from "@/types/drawing.types";
 import { ICreateRoomResponse } from "@/types/room.types";
 
-export const roomService = globalApi.injectEndpoints({
+export const lobbyService = globalApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
         createRoom: builder.mutation<ICreateRoomResponse, void>({
@@ -21,11 +21,11 @@ export const roomService = globalApi.injectEndpoints({
                 }
             })
         }),
-        getLobbyCanvas: builder.query<string, string>({
+        getLobbyCanvas: builder.query<{filePath: string}, string>({
             query: (body) => `lobby/getCanvas/${body}`
         })
     })
 })
 
 
-export const { useCreateRoomMutation, useSaveLobbyCanvasMutation, useLazyGetLobbyCanvasQuery } = roomService
+export const { useCreateRoomMutation, useSaveLobbyCanvasMutation, useLazyGetLobbyCanvasQuery } = lobbyService

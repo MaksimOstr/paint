@@ -18,14 +18,12 @@ import { setRoomId } from "@/slices/lobby.slice";
 import { Join } from "./pages/join/join";
 
 
-
 export const Lobby = () => {
   const [page, setPage] = useState("");
   const { push } = useRouter();
   const url = usePathname();
   const dispatch = useAppDispatch()
-
-  const [ createRoom ] = useCreateRoomMutation()
+  const [createRoom] = useCreateRoomMutation()
 
 
   const handleCreateRoom = () => {

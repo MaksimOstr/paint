@@ -4,23 +4,23 @@ import React, { useContext, useEffect, useRef } from "react";
 import styles from "./canvas.module.scss";
 import { Box } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
-import { Brush } from "./tools/Brush";
 import { CanvasContext } from "@/app/main/page";
-import { loadCanvas, saveCanvas, selectToolParam } from "./functions/canvasFunctions";
+import {
+  loadCanvas,
+  saveCanvas,
+  selectToolParam,
+} from "./functions/canvasFunctions";
 import { pushToUndo } from "@/slices/canvas.slice";
 import { socket } from "../../../../shared/utils/socket.utils";
 import { toast } from "react-toastify";
 import { setLobbyUsers, setRoomId } from "@/slices/lobby.slice";
-import { IWebSocketDrawingRes } from "@/types/drawing.types";
 import { useGetUserProfileQuery } from "@/services/auth.service";
-import { Square } from "./tools/Square";
-import { setTool } from "@/slices/tool.slice";
-import { Eraser } from "./tools/Eraser";
-import { Rect } from "./tools/Rect";
-import Line from "./tools/Line";
-import Circle from "./tools/Circle";
-import { useLazyGetLobbyCanvasQuery, useSaveLobbyCanvasMutation } from "@/services/lobby.service";
 
+import {
+  useLazyGetLobbyCanvasQuery,
+  useSaveLobbyCanvasMutation,
+} from "@/services/lobby.service";
+import { drawOnlineHandler } from "./functions/onlineCanvasFunction";
 
 export const Canvas = () => {
   const dispatch = useAppDispatch();
@@ -28,64 +28,72 @@ export const Canvas = () => {
   const { toolName, size, color } = useAppSelector((state) => state.tool);
   const { setValue } = useContext(CanvasContext);
   const roomId = useAppSelector((state) => state.lobby.roomId);
-  const { data } = useGetUserProfileQuery()
-  const [canvasToServer] = useSaveLobbyCanvasMutation()
-  const [getLobbyCanvas] = useLazyGetLobbyCanvasQuery()
+  const { data } = useGetUserProfileQuery();
+  const [canvasToServer] = useSaveLobbyCanvasMutation();
+  const [getLobbyCanvas] = useLazyGetLobbyCanvasQuery();
 
   const saveCanvasToServer = () => {
-   if(roomId) {
-    canvasRef.current!.toBlob(async (blob) => {
-      const formData = new FormData();
-      if(blob) {
-        formData.append("canvas", blob, `${roomId}.png`);
-      }
-      await canvasToServer({formData, roomId})
-    }, "image/png");
-   }
-  }
+    if (roomId) {
+      canvasRef.current!.toBlob(async (blob) => {
+        const formData = new FormData();
+        if (blob) {
+          formData.append("canvas", blob, `${roomId}.png`);
+        }
+        await canvasToServer({ formData, roomId });
+      }, "image/png");
+    }
+  };
 
   //Saving and loading canvasState
   useEffect(() => {
-    setValue(canvasRef.current);
+    setValue(canvasRef.current)
     loadCanvas(canvasRef, localStorage.getItem("canvasUrl")!);
-    window.addEventListener("beforeunload", () => saveCanvas(canvasRef));
-
-    return () => {
-      window.removeEventListener("beforeunload", () => saveCanvas(canvasRef));
-    };
   }, [setValue]);
 
   useEffect(() => {
     const ctx = canvasRef.current!.getContext("2d");
     if (roomId && data?.username) {
       socket.connect();
-      socket.emit("join room", {roomId, username: data.username, id: data.id});
-      dispatch(setTool('brush'))
+      socket.emit("join room", {
+        roomId,
+        username: data.username,
+        id: data.id,
+      });
+      
       socket.on("joinSuccess", async (res) => {
+        localStorage.removeItem('canvasUrl')
         toast.success(res.message);
         await getLobbyCanvas(roomId)
           .unwrap()
-          .then((res) => loadCanvas(canvasRef, res.filePath))
+          .then((res) => {
+            if(res) {
+              loadCanvas(canvasRef, res.filePath)
+            } else {
+              if(ctx) {
+                ctx.clearRect(0, 0, canvasRef.current!.width, canvasRef.current!.height);
+              }
+            }
+          });
       });
 
-      socket.on('userJoining', (res) => {
-        toast.info(`${res.username} had joined to the room!`)
-      })
+      socket.on("userJoining", (res) => {
+        toast.info(`${res.username} had joined to the room!`);
+      });
 
-      socket.on('userLeaving', (res) => {
-        toast.info(`${res.username} left the room.`)
-      })
+      socket.on("userLeaving", (res) => {
+        toast.info(`${res.username} left the room.`);
+      });
 
-      socket.on('disconnect', () => {
-        toast.success('You disconnected from the room!')
+      socket.on("disconnect", () => {
+        toast.success("You disconnected from the room!");
         localStorage.removeItem("roomId");
         dispatch(setRoomId(null));
-      })
+      });
 
-      socket.on('roomClosing', (res) => {
-        toast.info(res.message)
-      })
-      
+      socket.on("roomClosing", (res) => {
+        toast.info(res.message);
+      });
+
       socket.on("joinError", (res) => {
         localStorage.removeItem("roomId");
         dispatch(setRoomId(null));
@@ -93,72 +101,45 @@ export const Canvas = () => {
         socket.disconnect();
       });
 
-      socket.on('updateUserList', (res) => {
-        console.log(res)
-        dispatch(setLobbyUsers(res))
-      })
-
-      socket.on("drawing", (res) => {
-        drawHandler(res);
+      socket.on("updateUserList", (res) => {
+        console.log(res);
+        dispatch(setLobbyUsers(res));
       });
 
-      socket.on('finishDraw', () => {
-        ctx!.beginPath()
-        ctx!.fillStyle = color
-        ctx!.strokeStyle = color
-      })
+      socket.on("drawing", (res) => {
+        drawOnlineHandler(res, canvasRef, roomId);
+      });
+
+      socket.on("finishDraw", () => {
+        if (ctx) {
+          ctx.beginPath();
+          ctx.fillStyle = color;
+          ctx.strokeStyle = color;
+        }
+      });
     }
 
     return () => {
       socket.disconnect();
       socket.removeAllListeners();
     };
-  }, [data?.username, dispatch, roomId]);
+  }, [color, data, dispatch, getLobbyCanvas, roomId]);
 
-//Setting tool for painting
+  //Setting tool for painting
   useEffect(() => {
-    selectToolParam(canvasRef, toolName, size, color, roomId)
+    selectToolParam(canvasRef, toolName, size, color, roomId);
   }, [dispatch, size, toolName, color, roomId]);
-
-  const drawHandler = (msg: IWebSocketDrawingRes) => {
-    const figure = msg.figure;
-    if (canvasRef.current) {
-      const ctx = canvasRef.current.getContext("2d");
-      if (ctx) {
-        switch (figure.type) {
-          case "brush":
-            Brush.staticDraw(ctx, figure.x, figure.y, figure.lineWidth, figure.color);
-            break;
-          case "square":
-            Square.staticDraw(ctx, figure.x, figure.y, figure.sideLength!, figure.color)
-            socket.emit('finishDrawing', { roomId })
-            break
-          case "clear":
-            ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-            break
-          case "eraser":
-            Eraser.staticDrawing(ctx, figure.x, figure.y, figure.lineWidth)
-          break
-          case "rect":
-            Rect.staticDraw(ctx, figure.x, figure.y, figure.width, figure.height, figure.color)
-            socket.emit('finishDrawing', { roomId })
-          break
-          case "line":
-            Line.staticDraw(ctx, figure.endX, figure.endY, figure.x, figure.y, figure.color, figure.lineWidth)
-            socket.emit('finishDrawing', { roomId })
-          break
-          case "circle":
-            Circle.staticDraw(ctx, figure.x, figure.y, figure.r, figure.color)
-            socket.emit('finishDrawing', { roomId })
-          break
-        }
-      }
-    }
-  };
 
   const mouseDownHandler = () => {
     dispatch(pushToUndo(canvasRef.current?.toDataURL()));
   };
+
+  const mouseUpHandler = () => {
+    saveCanvasToServer()
+    if(!roomId) {
+      saveCanvas(canvasRef)
+    }
+  }
 
   return (
     <Box
@@ -171,7 +152,7 @@ export const Canvas = () => {
     >
       <canvas
         onMouseDown={() => mouseDownHandler()}
-        onMouseUp={() => saveCanvasToServer()}
+        onMouseUp={() => mouseUpHandler()}
         ref={canvasRef}
         className={styles.canvas}
         width={1920}

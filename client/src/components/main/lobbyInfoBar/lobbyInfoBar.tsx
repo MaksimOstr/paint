@@ -16,12 +16,10 @@ import { useGetUserProfileQuery } from "@/services/auth.service";
 import GroupsIcon from '@mui/icons-material/Groups';
 
 export const LobbyInfoBar = () => {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null
-  );
-
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const { roomId, connectedUsers } = useAppSelector((state) => state.lobby);
   const { data } = useGetUserProfileQuery();
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };

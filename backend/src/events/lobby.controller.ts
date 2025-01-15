@@ -18,6 +18,7 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
 import { join } from 'path'
 import { Response } from 'express';
+import { exists, existsSync, fstat } from 'fs'
 
 @Controller('lobby')
 export class LobbyController {
@@ -45,7 +46,6 @@ export class LobbyController {
         destination: './uploads/canvases',
         filename: (req, file, cb) => {
           const roomId = req.headers['roomid'];
-          console.log(roomId)
           if (!roomId) {
             cb(new Error('Room ID is missing'), null);
           } else {
@@ -62,6 +62,11 @@ export class LobbyController {
   @Get('getCanvas/:roomId')
   getLobbyCanvas(@Param('roomId') roomId: string) {
     const filePath = `http://localhost:4000/uploads/canvases/${roomId}.png`;
-    return {filePath}
+    const localFilePath = `./uploads/canvases/${roomId}.png`
+    if(existsSync(localFilePath)) {
+      return {filePath}
+    }
+
+    return ''
   }
 }
