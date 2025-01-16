@@ -62,7 +62,8 @@ export class LobbyController {
   @Get('getCanvas/:roomId')
   getLobbyCanvas(@Param('roomId') roomId: string) {
     const filePath = `http://localhost:4000/uploads/canvases/${roomId}.png`;
-    const localFilePath = `./uploads/canvases/${roomId}.png`
+    const localFilePath = join(process.cwd(), './uploads/canvases', `${roomId}.png`);
+    
     if(existsSync(localFilePath)) {
       return {filePath}
     }

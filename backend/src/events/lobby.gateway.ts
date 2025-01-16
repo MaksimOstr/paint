@@ -18,6 +18,8 @@ import {
   IUserLeaveReq,
 } from './types/drawEvent.types'
 import { LobbyService } from './lobby.service'
+import path, { join } from 'path'
+import { existsSync, unlinkSync } from 'fs'
 
 @WebSocketGateway({
   cors: {
@@ -68,7 +70,7 @@ export class LobbyGateway
         room: data,
         message: 'Successfully joined the room!',
       })
-      
+
       const isCreator = isValidRoom.creatorId === id
       const isUserLogo = userLogo === "" ? null : userLogo
 
@@ -87,7 +89,13 @@ export class LobbyGateway
 
     const isDeletedRoom = await this.eventService.deleteRoom(roomId, id)
 
+
     if (isDeletedRoom) {
+      const localFilePath = join(process.cwd(), '/uploads/canvases', `${roomId}.png`);
+      if(existsSync(localFilePath)) {
+        unlinkSync(localFilePath)
+      }
+      
       client.broadcast
         .to(roomId)
         .emit('roomClosing', { message: 'Room was closed by its owner.' })

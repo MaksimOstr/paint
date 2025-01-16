@@ -120,12 +120,8 @@ export const Canvas = () => {
         }
       });
     }
-
-    return () => {
-      socket.disconnect();
-      socket.removeAllListeners();
-    };
-  }, [color, data, dispatch, getLobbyCanvas, roomId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, dispatch, getLobbyCanvas, roomId]);
 
   //Setting tool for painting
   useEffect(() => {

@@ -23,7 +23,7 @@ export class UserService {
     authMethod?: AuthMethod,
   ): Promise<UserWithoutPassword> {
     const { username, password, email } = data
-
+    
     return await this.prismaService.user.create({
       data: {
         email,
