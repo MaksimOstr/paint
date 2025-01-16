@@ -54,8 +54,10 @@ export const Canvas = () => {
     const ctx = canvasRef.current!.getContext("2d");
     if (roomId && data?.username) {
       socket.connect();
+      console.log(data.profileLogo)
       socket.emit("join room", {
         roomId,
+        userLogo: data.profileLogo,
         username: data.username,
         id: data.id,
       });

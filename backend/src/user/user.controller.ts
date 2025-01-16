@@ -49,18 +49,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('/updateUser')
-  @UseInterceptors(
-    FileInterceptor('profileLogo', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, callback) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          callback(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
-        },
-      }),
-    }),
-  )
+  @UseInterceptors(FileInterceptor('profileLogo'),)
   async updateUserLogoAndUsername(
     @UploadedFile() profileLogo: Express.Multer.File,
     @Body('username') username: string,

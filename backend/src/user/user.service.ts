@@ -7,12 +7,15 @@ import * as bcrypt from 'bcrypt'
 import { UserWithoutPassword } from 'src/shared/types/userWithoutPassword'
 import { JwtService } from '@nestjs/jwt'
 import { UpdateUserDto } from './dto/updateUser.dto'
+import { AwsS3Service } from 'src/awsS3/awsS3.service'
+import { v4 } from 'uuid'
 
 @Injectable()
 export class UserService {
   constructor(
     private prismaService: PrismaService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private awsS3Service: AwsS3Service
   ) {}
 
   async createUser(
@@ -46,8 +49,7 @@ export class UserService {
   async updateUserLogoAndUsername(userData: UserWithoutPassword, updateData: UpdateUserDto) {
 
     const { username, id, email, role, profileLogo } = userData
-
-    const logoPath = updateData.profileLogo ? `/uploads/${updateData.profileLogo.filename}` : profileLogo;
+    const logoPath = updateData.profileLogo ? await this.awsS3Service.uploadSingleFile(updateData.profileLogo, id) : profileLogo;
 
     const payload: Omit<UserWithoutPassword, 'authMethod'> = {
       email,

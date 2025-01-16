@@ -7,16 +7,20 @@ import {
   Stack,
   Typography,
   Button,
+  Avatar,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useAppSelector } from "@/hooks/rtkHooks";
 import { socket } from "../../../../shared/utils/socket.utils";
 import { toast } from "react-toastify";
 import { useGetUserProfileQuery } from "@/services/auth.service";
-import GroupsIcon from '@mui/icons-material/Groups';
+import GroupsIcon from "@mui/icons-material/Groups";
+
 
 export const LobbyInfoBar = () => {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null
+  );
   const { roomId, connectedUsers } = useAppSelector((state) => state.lobby);
   const { data } = useGetUserProfileQuery();
 
@@ -74,12 +78,24 @@ export const LobbyInfoBar = () => {
           </Stack>
           <Stack spacing={1}>
             <Typography variant="h6">Lobby users:</Typography>
-            <Stack spacing={1}>
+            <Stack spacing={2}>
               {connectedUsers.map((user, index) => (
                 <Box key={index}>
-                  <Stack alignItems='center' spacing={5} direction='row'>
-                    <Typography>{user.username}</Typography>
-                    {user.isCreator ? <GroupsIcon fontSize="small"/> : ''}
+                  <Stack alignItems="center" spacing={1} direction="row">
+                    {user.userLogo ? (
+                      <Avatar
+                        src={user.userLogo}
+                        sx={{ width: "40px", height: "40px" }}
+                      />
+                    ) : (
+                      <Avatar sx={{ width: "40px", height: "40px" }}>
+                        {user.username[0]}
+                      </Avatar>
+                    )}
+                    <Stack direction="row" spacing={1}>
+                      <Typography>{user.username}</Typography>
+                      {user.isCreator ? <GroupsIcon fontSize="small" /> : ""}
+                    </Stack>
                   </Stack>
                 </Box>
               ))}

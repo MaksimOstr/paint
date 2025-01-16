@@ -10,7 +10,8 @@ export interface IDrawRequest {
 
 
 export interface IUserJoinReq {
-    roomId: string
+    roomId: string,
+    userLogo: string
     username: string
     id: string
 }
@@ -21,7 +22,8 @@ export interface IUserLeaveReq extends IUserJoinReq {
 
 export interface ILobbyUser {
     roomId: string
-    username: string,
+    userLogo: string
+    username: string
     isCreator: boolean
 }
 

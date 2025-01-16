@@ -12,6 +12,7 @@ import { LobbyModule } from './events/lobby.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { DrawingModule } from './drawing/drawing.module';
+import { AwsS3Module } from './awsS3/awsS3.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { DrawingModule } from './drawing/drawing.module';
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true }),
     LobbyModule,
+    AwsS3Module,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
       serveRoot: '/uploads'

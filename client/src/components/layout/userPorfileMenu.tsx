@@ -15,7 +15,8 @@ import {
 } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { API_URL } from "../../../shared/constants";
+
+
 
 export default function UserProfileMenu() {
   const { push } = useRouter();
@@ -23,14 +24,14 @@ export default function UserProfileMenu() {
   const [logout] = useLogoutMutation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-
+  
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  console.log(data?.profileLogo)
   const logoutUser = () => {
     logout()
       .unwrap()
@@ -63,7 +64,7 @@ export default function UserProfileMenu() {
                 aria-expanded={open ? "true" : undefined}
               >
                 <Avatar
-                  src={data?.profileLogo !== null ? `${API_URL}${data?.profileLogo}` : ""}
+                  src={data?.profileLogo !== null ? `${data?.profileLogo}?t=${new Date().getTime()}` : ""}
                   sx={{ width: 42, height: 42 }}
                 >
                   {data?.username[0]}
@@ -110,7 +111,7 @@ export default function UserProfileMenu() {
           >
             <MenuItem onClick={() => push("/main/profile/settings")}>
               <Avatar
-                src={data?.profileLogo !== null ? `${API_URL}${data?.profileLogo}` : ""}
+                src={data?.profileLogo !== null ? `${data?.profileLogo}?t=${new Date().getTime()}` : ""}
                 sx={{ width: 42, height: 42 }}
               >
                 {data?.username[0]}

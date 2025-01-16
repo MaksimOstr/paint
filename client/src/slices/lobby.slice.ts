@@ -4,6 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 interface ILobbyUser {
   username: string
   isCreator: boolean
+  userLogo: string
 }
 
 interface LobbyState {

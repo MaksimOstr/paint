@@ -52,7 +52,7 @@ export class LobbyGateway
     @MessageBody() data: IUserJoinReq,
     @ConnectedSocket() client: Socket,
   ) {
-    const { roomId, username, id } = data
+    const { roomId, username, id, userLogo } = data
     
     const isValidRoom = await this.prismaService.socketsRoom.findFirst({
       where: { roomId },
@@ -68,9 +68,11 @@ export class LobbyGateway
         room: data,
         message: 'Successfully joined the room!',
       })
+      
       const isCreator = isValidRoom.creatorId === id
+      const isUserLogo = userLogo === "" ? null : userLogo
 
-      this.users[id] = { username, roomId, isCreator }
+      this.users[id] = { username, roomId, isCreator, userLogo: isUserLogo }
       this.updateLobbyUsers(roomId)
       client.broadcast.to(roomId).emit('userJoining', { username })
     }
@@ -114,7 +116,7 @@ export class LobbyGateway
   updateLobbyUsers(roomId: string) {
     const lobbyUsers = Object.values(this.users)
       .filter((user) => user.roomId === roomId)
-      .map((user) => ({ username: user.username, isCreator: user.isCreator }))
+      .map((user) => ({ username: user.username, isCreator: user.isCreator, userLogo: user.userLogo }))
   
     this.server.to(roomId).emit('updateUserList', lobbyUsers)
   }

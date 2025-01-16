@@ -10,6 +10,14 @@ const nextConfig: NextConfig = {
       }
     ];
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: "paintic-bucket.s3.amazonaws.com", 
+      }
+    ]
+  }
 };
 
 export default nextConfig;
