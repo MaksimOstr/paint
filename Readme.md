@@ -20,8 +20,7 @@ Storage:
 AWS S3
 
 Authentication:
-JWT with refresh tokens
-OAuth2.0 Google
+JWT with refresh tokens, OAuth2.0 Google
 
 
 ## 🚀 Getting Started  
