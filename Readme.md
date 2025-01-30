@@ -3,12 +3,23 @@
 **Paint Together** is a real-time collaborative drawing application that lets you create a room and invite your friends. If you prefer drawing solo, you can do that too!  
 
 🛠 Tech Stack
-Frontend: Next js, TypeScript.
-Backend: Nest js, TypeScript, WebSockets.
-Database: PostgreSQL.
-ORM: Prisma.
-Storage: AWS S3.
-Authentication: JWT with refresh tokens.
+Frontend:
+Next.js, TypeScript
+
+Backend:
+Nest.js, TypeScript, WebSockets
+
+Database:
+PostgreSQL
+
+ORM:
+Prisma
+
+Storage:
+AWS S3
+
+Authentication:
+JWT with refresh tokens
 
 
 ## 🚀 Getting Started  
