@@ -2,7 +2,8 @@
 
 **Paint Together** is a real-time collaborative drawing application that lets you create a room and invite your friends. If you prefer drawing solo, you can do that too!  
 
-🛠 Tech Stack
+## 🛠 Tech Stack
+
 Frontend:
 Next.js, TypeScript
 
@@ -20,6 +21,7 @@ AWS S3
 
 Authentication:
 JWT with refresh tokens
+OAuth2.0 Google
 
 
 ## 🚀 Getting Started  
