@@ -2,8 +2,8 @@
 
 import React from "react";
 import { debounce, TextField } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
-import { setColor } from "@/slices/tool.slice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/rtkHooks";
+import { setColor } from "@/lib/slices/tool.slice";
 
 export const ColorPicker = () => {
   const { color } = useAppSelector((state) => state.tool);

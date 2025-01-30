@@ -1,5 +1,5 @@
-import { globalApi } from "@/api/globalApi";
-import { IUserAuth } from "@/types/auth.types";
+import { globalApi } from '../api/globalApi'
+import { IUserAuth } from "@/lib/types/auth.types";
 
 export const signUpService = globalApi.injectEndpoints({
     overrideExisting: true,

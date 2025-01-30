@@ -10,8 +10,8 @@ import {
 import React, { useState } from "react";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/hooks/rtkHooks";
-import { setRoomId } from "@/slices/lobby.slice";
+import { useAppDispatch } from "@/lib/hooks/rtkHooks";
+import { setRoomId } from "@/lib/slices/lobby.slice";
 
 export const Join = ({
   setPage,

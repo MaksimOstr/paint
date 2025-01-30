@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { globalApi } from './api/globalApi'
-import toolReducer from './slices/tool.slice'
-import canvasReducer from './slices/canvas.slice'
-import lobbyReducer from './slices/lobby.slice'
+import { globalApi } from '../api/globalApi'
+import toolReducer from '../slices/tool.slice'
+import canvasReducer from '../slices/canvas.slice'
+import lobbyReducer from '../slices/lobby.slice'
 
 
 

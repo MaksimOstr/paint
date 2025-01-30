@@ -1,11 +1,11 @@
-import { IWebSocketDrawingRes } from "@/types/drawing.types";
+import { IWebSocketDrawingRes } from "@/lib/types/drawing.types";
 import { Brush } from "../tools/Brush";
 import { Square } from "../tools/Square";
-import { socket } from "../../../../../shared/utils/socket.utils";
 import { Eraser } from "../tools/Eraser";
 import { Rect } from "../tools/Rect";
 import Line from "../tools/Line";
 import Circle from "../tools/Circle";
+import { socket } from "@/lib/shared/utils/socket.utils";
 
 export const drawOnlineHandler = (msg: IWebSocketDrawingRes, canvasRef: React.RefObject<HTMLCanvasElement | null>, roomId: string) => {
     const figure = msg.figure;

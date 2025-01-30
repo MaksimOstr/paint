@@ -4,7 +4,7 @@ import { Paper, Stack } from '@mui/material'
 import React from 'react'
 import ThemeToggleButton from './ThemeToggle'
 import UserProfileMenu from './userPorfileMenu'
-import { useAppSelector } from '@/hooks/rtkHooks'
+import { useAppSelector } from '@/lib/hooks/rtkHooks'
 
 export const LayoutComponent = () => {
 

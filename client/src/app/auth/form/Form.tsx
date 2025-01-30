@@ -5,8 +5,8 @@ import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { formSchema } from "./formSchema";
-import { IUserAuth } from "@/types/auth.types";
-import { useLoginMutation } from "@/services/auth.service";
+import { IUserAuth } from "@/lib/types/auth.types";
+import { useLoginMutation } from "@/lib/services/auth.service";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 

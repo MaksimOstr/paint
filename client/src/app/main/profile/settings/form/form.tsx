@@ -3,9 +3,9 @@
 import { Avatar, Button, Stack, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useGetUserProfileQuery } from "@/services/auth.service";
+import { useGetUserProfileQuery } from "@/lib/services/auth.service";
 import { IUpdateForm } from "./formType";
-import { useUpdateUserMutation } from "@/services/user.service";
+import { useUpdateUserMutation } from "@/lib/services/user.service";
 import { toast } from "react-toastify";
 
 export const Form: React.FC = () => {

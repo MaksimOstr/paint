@@ -1,4 +1,4 @@
-import { socket } from "../../../../../shared/utils/socket.utils";
+import { socket } from "@/lib/shared/utils/socket.utils";
 import { Brush } from "./Brush";
 
 export class Eraser extends Brush {

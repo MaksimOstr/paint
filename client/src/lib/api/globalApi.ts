@@ -1,6 +1,8 @@
-import { AuthRequest } from '@/types/auth.types'
+import { AuthRequest } from '@/lib/types/auth.types'
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta, QueryReturnValue } from '@reduxjs/toolkit/query/react'
-import { API_URL } from '../../shared/constants'
+import { API_URL } from '../shared/constants'
+
+
 
 
 const baseQuery = fetchBaseQuery({

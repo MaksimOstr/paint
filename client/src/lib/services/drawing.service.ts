@@ -1,5 +1,5 @@
-import { globalApi } from "@/api/globalApi";
-import { IDrawing } from "@/types/drawing.types";
+import { globalApi } from '../api/globalApi'
+import { IDrawing } from "@/lib/types/drawing.types";
 
 export const drawingService = globalApi.injectEndpoints({
     overrideExisting: true,

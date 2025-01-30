@@ -1,5 +1,5 @@
-import { globalApi } from "@/api/globalApi";
-import { AuthRequest } from "@/types/auth.types";
+import { globalApi } from '../api/globalApi'
+import { AuthRequest } from "@/lib/types/auth.types";
 
 
 

@@ -3,24 +3,24 @@
 import React, { useContext, useEffect, useRef } from "react";
 import styles from "./canvas.module.scss";
 import { Box } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/rtkHooks";
 import { CanvasContext } from "@/app/main/page";
 import {
   loadCanvas,
   saveCanvas,
   selectToolParam,
 } from "./functions/canvasFunctions";
-import { pushToUndo } from "@/slices/canvas.slice";
-import { socket } from "../../../../shared/utils/socket.utils";
+import { pushToUndo } from "@/lib/slices/canvas.slice";
 import { toast } from "react-toastify";
-import { setLobbyUsers, setRoomId } from "@/slices/lobby.slice";
-import { useGetUserProfileQuery } from "@/services/auth.service";
+import { setLobbyUsers, setRoomId } from "@/lib/slices/lobby.slice";
+import { useGetUserProfileQuery } from "@/lib/services/auth.service";
 
 import {
   useLazyGetLobbyCanvasQuery,
   useSaveLobbyCanvasMutation,
-} from "@/services/lobby.service";
+} from "@/lib/services/lobby.service";
 import { drawOnlineHandler } from "./functions/onlineCanvasFunction";
+import { socket } from "@/lib/shared/utils/socket.utils";
 
 export const Canvas = () => {
   const dispatch = useAppDispatch();

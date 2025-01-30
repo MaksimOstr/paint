@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
-import { useSaveDrawingMutation } from "@/services/drawing.service";
+import { useSaveDrawingMutation } from "@/lib/services/drawing.service";
 import { toast } from "react-toastify";
 
 

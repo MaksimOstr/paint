@@ -1,6 +1,6 @@
-import { globalApi } from '@/api/globalApi'
-import { AuthRequest, IUserAuth } from '@/types/auth.types'
-import { IUser } from '@/types/user.types'
+import { globalApi } from '../api/globalApi'
+import { AuthRequest, IUserAuth } from '@/lib/types/auth.types'
+import { IUser } from '@/lib/types/user.types'
 
 
 

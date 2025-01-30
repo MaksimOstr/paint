@@ -5,14 +5,15 @@ import React, { useContext } from "react";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
 import { ColorPicker } from "./components/ColorPicker";
-import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/rtkHooks";
 import { tools } from "./components/tools";
-import { setSize, setTool } from "@/slices/tool.slice";
+import { setSize, setTool } from "@/lib/slices/tool.slice";
 import { CanvasContext } from "@/app/main/page";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import { SaveButton } from "./components/saveButton";
-import { pushToUndo, Redo, Undo } from "@/slices/canvas.slice";
-import { socket } from "../../../../shared/utils/socket.utils";
+import { pushToUndo, Redo, Undo } from "@/lib/slices/canvas.slice";
+import { socket } from "@/lib/shared/utils/socket.utils";
+
 
 export const ToolBar = () => {
   const { toolName, size } = useAppSelector((state) => state.tool);

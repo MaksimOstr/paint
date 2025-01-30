@@ -12,7 +12,7 @@ import Logout from "@mui/icons-material/Logout";
 import {
   useGetUserProfileQuery,
   useLogoutMutation,
-} from "@/services/auth.service";
+} from "@/lib/services/auth.service";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 

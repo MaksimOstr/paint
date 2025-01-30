@@ -1,6 +1,6 @@
-import { globalApi } from "@/api/globalApi";
-import { ISaveLobbyCanvas } from "@/types/drawing.types";
-import { ICreateRoomResponse } from "@/types/room.types";
+import { globalApi } from '../api/globalApi'
+import { ISaveLobbyCanvas } from "@/lib/types/drawing.types";
+import { ICreateRoomResponse } from "@/lib/types/room.types";
 
 export const lobbyService = globalApi.injectEndpoints({
     overrideExisting: true,

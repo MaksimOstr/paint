@@ -10,11 +10,11 @@ import {
   Avatar,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { useAppSelector } from "@/hooks/rtkHooks";
-import { socket } from "../../../../shared/utils/socket.utils";
+import { useAppSelector } from "@/lib/hooks/rtkHooks";
 import { toast } from "react-toastify";
-import { useGetUserProfileQuery } from "@/services/auth.service";
+import { useGetUserProfileQuery } from "@/lib/services/auth.service";
 import GroupsIcon from "@mui/icons-material/Groups";
+import { socket } from "@/lib/shared/utils/socket.utils";
 
 
 export const LobbyInfoBar = () => {

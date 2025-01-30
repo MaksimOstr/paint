@@ -4,8 +4,8 @@ import { Canvas } from "@/components/main/canvas/Canvas";
 import { CreateLobbyButton } from "@/components/main/createLobbyButton/createLobbyButton";
 import { LobbyInfoBar } from "@/components/main/lobbyInfoBar/lobbyInfoBar";
 import { ToolBar } from "@/components/main/toolBar/ToolBar";
-import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
-import { setRoomId } from "@/slices/lobby.slice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/rtkHooks";
+import { setRoomId } from "@/lib/slices/lobby.slice";
 import { Box } from "@mui/material";
 import React, { createContext, Dispatch, SetStateAction, useEffect, useState } from "react";
 

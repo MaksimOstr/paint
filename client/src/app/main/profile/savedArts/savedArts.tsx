@@ -3,7 +3,7 @@
 import {
   useDeleteDrawingMutation,
   useGetDrawingsQuery,
-} from "@/services/drawing.service";
+} from "@/lib/services/drawing.service";
 import {
   Box,
   Button,
@@ -15,11 +15,11 @@ import {
 } from "@mui/material";
 import React from "react";
 import Grid from "@mui/material/Grid2";
-import { API_URL } from "../../../../../shared/constants";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { useAppDispatch } from "@/hooks/rtkHooks";
-import { setRedoEmpty, setUndoEmpty } from "@/slices/canvas.slice";
+import { useAppDispatch } from "@/lib/hooks/rtkHooks";
+import { setRedoEmpty, setUndoEmpty } from "@/lib/slices/canvas.slice";
+import { API_URL } from "@/lib/shared/constants";
 
 export const SavedArts = () => {
   const { data, isLoading } = useGetDrawingsQuery();

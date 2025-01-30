@@ -19,7 +19,7 @@ export const ThemeProviderClient = ({ initialMode, children }: { initialMode: st
   const [mode, setMode] = useState<string>(initialMode);
 
   useEffect(() => {
-    Cookies.set('theme', mode, { expires: 365 }); // Сохраняем тему в cookies
+    Cookies.set('theme', mode, { expires: 365 });
   }, [mode]);
 
   const toggleTheme = () => {

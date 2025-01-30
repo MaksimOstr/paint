@@ -5,8 +5,8 @@ import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { formSchema } from "./formSchema";
-import { ISignUpForm } from "@/types/signUp.types";
-import { useCreateAccountMutation } from "@/services/signUp.service";
+import { ISignUpForm } from "@/lib/types/signUp.types";
+import { useCreateAccountMutation } from "@/lib/services/signUp.service";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 

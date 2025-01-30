@@ -41,7 +41,7 @@ export class UserController {
   @Get(':idOrEmail')
   @ApiParam({ name: 'idOrUsername', type: String, description: 'Find user by id or username.' })
   async findUserByEmailOrId(
-    @Param('idOrUsername') idOrEmail: string,
+    @Param(':idOrEmail') idOrEmail: string,
   ): Promise<UserWithoutPassword | null> {
     return await this.userService.findUserByIdOrEmail(idOrEmail)
   }
