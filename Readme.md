@@ -1,6 +1,6 @@
-# 🎨 Paint Together – Fullstack Collaborative Drawing App  
+# 🎨 Paint – Fullstack Collaborative Drawing App  
 
-**Paint Together** is a real-time collaborative drawing application that lets you create a room and invite your friends. If you prefer drawing solo, you can do that too!  
+It is a real-time collaborative drawing application that lets you create a room and invite your friends. If you prefer drawing solo, you can do that too!  
 
 ## 🛠 Tech Stack
 
