@@ -1,23 +1,34 @@
-It is a fullstack app for painting together with your friends. You can create a room and call your friends. If you want to paint on your own, you can do it also.
+# 🎨 Paint Together – Fullstack Collaborative Drawing App  
+
+**Paint Together** is a real-time collaborative drawing application that lets you create a room and invite your friends. If you prefer drawing solo, you can do that too!  
+
+🛠 Tech Stack
+Frontend: Next js, TypeScript.
+Backend: Nest js, TypeScript, WebSockets.
+Database: PostgreSQL.
+ORM: Prisma.
+Storage: AWS S3.
+Authentication: JWT with refresh tokens.
 
 
+## 🚀 Getting Started  
 
-To start an app you should do that:
+### 🖥️ Backend Setup  
 
-At the backend folder:
+1️⃣ **Configure Environment Variables**  
+Create a `.env` file in the backend folder and add the following variables:  
 
-1. Set up .env variables at the backend folder:
-
-DATABASE_URL
-JWT_SECRET
-JWT_EXP
-CLIENT_ID
-CLIENT_SECRET
-CALLBACK_URL
-S3_REGION
-S3_BUCKET_NAME
-AWS_ACCESS_KEY
-AWS_SECRET_ACCESS_KEY
+```env
+DATABASE_URL=your_database_url
+JWT_SECRET=your_jwt_secret
+JWT_EXP=your_jwt_expiration_time
+CLIENT_ID=your_client_id
+CLIENT_SECRET=your_client_secret
+CALLBACK_URL=your_callback_url
+S3_REGION=your_s3_region
+S3_BUCKET_NAME=your_s3_bucket_name
+AWS_ACCESS_KEY=your_aws_access_key
+AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
 
 2. Enter the command: npm i
 
@@ -25,9 +36,8 @@ AWS_SECRET_ACCESS_KEY
 
 4. Run the command: npm run start:dev
 
-Frontend:
+### 🖥️ Frontend Setup  
 
 1. Enter the command: npm i
 
-2. Run the command: npm run dev
-
+2. Run the command: npm run dev  сделай это ридми красивее
