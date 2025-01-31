@@ -45,9 +45,7 @@ export class LobbyGateway
 
   handleConnection(client: Socket, ...args: any[]) {}
 
-  handleDisconnect(client: Socket) {
-    console.log('disconnect')
-  }
+  handleDisconnect(client: Socket) {}
 
   @SubscribeMessage('join room')
   async joinRoom(

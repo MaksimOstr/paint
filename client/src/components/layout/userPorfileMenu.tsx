@@ -31,7 +31,6 @@ export default function UserProfileMenu() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  console.log(data?.profileLogo)
   const logoutUser = () => {
     logout()
       .unwrap()
