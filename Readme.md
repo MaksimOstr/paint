@@ -4,26 +4,26 @@ It is a real-time collaborative drawing application that lets you create a room 
 
 ## 🛠 Tech Stack
 
-General:
+**General**:
 Typescript
 
-Frontend:
+**Frontend**:
 Next.js
 
-Backend:
+**Backend**:
 Nest.js, WebSockets
 
-Database:
+**Database**:
 PostgreSQL
 
-ORM:
+**ORM**:
 Prisma
 
-Storage:
+**Storage**:
 AWS S3
 
-Authentication:
-JWT with refresh tokens, OAuth2.0 Google
+**Authentication**:
+JWT with refresh tokens, OAuth2.0 (Google)
 
 
 ## 🚀 Getting Started  
