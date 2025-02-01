@@ -4,11 +4,14 @@ It is a real-time collaborative drawing application that lets you create a room 
 
 ## 🛠 Tech Stack
 
+General:
+Typescript
+
 Frontend:
-Next.js, TypeScript
+Next.js
 
 Backend:
-Nest.js, TypeScript, WebSockets
+Nest.js, WebSockets
 
 Database:
 PostgreSQL
